@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        android:background="@color/white"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="mtsealove.com.github.BuslinkerDrivers.Accounts.SignUpActivity">
+
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:id="@+id/titleLayout"
+                    android:background="@color/colorPrimary">
+        <ImageView android:layout_width="25dp" android:layout_height="25dp"
+                   android:layout_margin="15dp"
+                   android:src="@drawable/btn_left"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerInParent="true"
+                  android:text="회원가입"
+                  android:textSize="22sp"
+                  android:textColor="@color/white"/>
+    </RelativeLayout>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_below="@id/titleLayout">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textSize="25sp"
+                      android:text="회원정보"/>
+            <!--회원정보-->
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="10dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textEmailAddress"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="이메일 주소"
+                      android:textColorHint="@color/hint"/>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textPassword"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="비밀번호"
+                      android:textColorHint="@color/hint"/>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textPassword"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="비밀번호 확인"
+                      android:textColorHint="@color/hint"/>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textPersonName"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="이름"
+                      android:textColorHint="@color/hint"/>
+
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:background="@drawable/background_input"
+                            android:clickable="true"
+                            android:layout_marginTop="15dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="생년월일"
+                          android:textSize="18sp"
+                          android:textColor="@color/hint"
+                          android:paddingVertical="5dp"
+                          android:paddingLeft="10dp"/>
+
+                <ImageView android:layout_width="25dp" android:layout_height="25dp"
+                           android:layout_centerVertical="true"
+                           android:layout_alignParentRight="true"
+                           android:layout_marginRight="10dp"
+                           android:src="@drawable/btn_date"
+                />
+            </RelativeLayout>
+
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:background="@drawable/background_input"
+                            android:layout_marginTop="15dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="성별"
+                          android:textSize="18sp"
+                          android:textColor="@color/hint"
+                          android:paddingVertical="5dp"
+                          android:paddingLeft="10dp"/>
+
+                <RadioGroup android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp">
+                    <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                 android:text="남성"
+                                 android:checked="true"/>
+
+                    <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                 android:text="여성"/>
+
+                </RadioGroup>
+            </RelativeLayout>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textPersonName"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="업체 ID"
+                      android:textColorHint="@color/hint"/>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textMultiLine"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="자기 소개\n간단하게 쓰시면 됩니다."
+                      android:textColorHint="@color/hint"/>
+
+            <!--차량 정보-->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:textColor="@color/black"
+                      android:textSize="25sp"
+                      android:text="차량정보"/>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textPersonName"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="보유 차종"
+                      android:textColorHint="@color/hint"/>
+
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/background_input">
+                <ImageView android:layout_width="25dp" android:layout_height="25dp"
+                           android:layout_centerVertical="true"
+                           android:src="@drawable/btn_left"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_centerInParent="true"
+                          android:text="연식: 2019"
+                          android:textSize="18sp"
+                          android:textColor="@color/hint"
+                          android:paddingVertical="5dp" />
+
+                <ImageView android:layout_width="25dp" android:layout_height="25dp"
+                           android:layout_centerVertical="true"
+                           android:layout_alignParentRight="true"
+                           android:src="@drawable/btn_right"/>
+            </RelativeLayout>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="5dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="textPersonName"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="차량번호"
+                      android:textColorHint="@color/hint"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
