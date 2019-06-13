@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BusLinker 기사용</string>
+    <string-array name="sort_by">
+        <item>가까운 출발지</item>
+        <item>낮은 운행시간</item>
+        <item>높은 운행시간</item>
+        <item>적은 경유지</item>
+        <item>많은 경유지</item>
+    </string-array>
 </resources>
