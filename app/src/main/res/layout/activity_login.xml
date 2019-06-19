@@ -49,7 +49,7 @@
                           android:textSize="18sp"
                           android:paddingVertical="10dp"/>
 
-                <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                <EditText android:layout_width="match_parent" android:layout_height="match_parent"
                           android:background="#00000000"
                           android:textSize="18sp"
                           android:paddingLeft="10dp"
@@ -70,7 +70,7 @@
                           android:textSize="18sp"
                           android:paddingVertical="10dp"/>
 
-                <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                <EditText android:layout_width="match_parent" android:layout_height="match_parent"
                           android:background="#00000000"
                           android:textSize="18sp"
                           android:paddingLeft="10dp"
@@ -84,6 +84,7 @@
 
             <Button android:layout_width="match_parent" android:layout_height="45dp"
                     android:layout_marginTop="10dp"
+                    android:clickable="true"
                     android:background="@drawable/btn_primary"
                     style="?android:attr/borderlessButtonStyle"
                     android:text="로그인"

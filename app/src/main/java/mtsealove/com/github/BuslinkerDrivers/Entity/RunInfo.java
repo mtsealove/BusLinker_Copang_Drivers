@@ -7,14 +7,16 @@ public class RunInfo {
     String endTime;
     int wayloadCnt;
     int cost;
+    int ID;
 
-    public RunInfo(String startAddr, String startTime, String endAddr, String endTime, int wayloadCnt, int cost){
+    public RunInfo(String startAddr, String startTime, String endAddr, String endTime, int wayloadCnt, int cost, int id){
         this.startAddr=startAddr;
         this.startTime=startTime;
         this.endAddr=endAddr;
         this.endTime=endTime;
         this.wayloadCnt=wayloadCnt;
         this.cost=cost;
+        this.ID=id;
     }
 
     public String getStartAddr() {
@@ -63,5 +65,13 @@ public class RunInfo {
 
     public void setCost(int cost) {
         this.cost = cost;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 }

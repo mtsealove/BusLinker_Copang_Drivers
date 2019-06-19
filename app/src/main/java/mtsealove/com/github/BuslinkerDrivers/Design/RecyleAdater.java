@@ -1,7 +1,9 @@
 package mtsealove.com.github.BuslinkerDrivers.Design;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +11,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import mtsealove.com.github.BuslinkerDrivers.Entity.RunInfo;
 import mtsealove.com.github.BuslinkerDrivers.R;
+import mtsealove.com.github.BuslinkerDrivers.RunInfoActivity;
 
 import java.util.List;
 
 public class RecyleAdater extends RecyclerView.Adapter<RecyleAdater.ViewHolder> {
     Context context;
     List<RunInfo> runInfos;
+    String CompanyID;
+    String userID;
 
     public RecyleAdater(Context context, List<RunInfo> runInfos) {
         this.context = context;
@@ -38,6 +43,17 @@ public class RecyleAdater extends RecyclerView.Adapter<RecyleAdater.ViewHolder> 
         viewHolder.endTime.setText(runInfo.getEndTime());
         viewHolder.wayloadCnt.setText(runInfo.getWayloadCnt() + "개 ");
         viewHolder.cost.setText(runInfo.getCost() + "원");
+
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(context, RunInfoActivity.class);
+                intent.putExtra("RunInfoID", runInfo.getID());
+                intent.putExtra("CompanyID", CompanyID);
+                intent.putExtra("userID", userID);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -47,15 +63,25 @@ public class RecyleAdater extends RecyclerView.Adapter<RecyleAdater.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView startAddr, startTime, endAddr, endTime, wayloadCnt, cost;
+        CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView=itemView.findViewById(R.id.cardView);
             startAddr = itemView.findViewById(R.id.startTV);
             startTime = itemView.findViewById(R.id.startTimeTV);
-            endAddr = itemView.findViewById(R.id.endTV);
+            endAddr = itemView.findViewById(R.id.IDTV);
             endTime = itemView.findViewById(R.id.endTimeTV);
             wayloadCnt = itemView.findViewById(R.id.wayloadTV);
             cost = itemView.findViewById(R.id.costTV);
         }
+    }
+
+    public void setCompanyID(String companyID) {
+        CompanyID = companyID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }

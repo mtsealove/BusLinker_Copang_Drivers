@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/catTV"
+              android:textColor="@color/hint"
+              android:text="화물 상차"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/addressTV"
+              android:textSize="17sp"
+              android:layout_below="@id/catTV"
+              android:text="서울시 광진구 아차산로 55길 43"
+              android:textColor="@color/black"
+    />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:layout_marginLeft="10dp"
+              android:textSize="17sp"
+              android:layout_below="@id/catTV"
+              android:layout_toRightOf="@id/addressTV"
+              android:text="지도보기"
+              android:textColor="@color/light_blue"
+              android:id="@+id/showMapTV"/>
+
+
+</RelativeLayout>

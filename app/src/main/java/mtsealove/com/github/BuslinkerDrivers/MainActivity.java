@@ -1,7 +1,6 @@
 package mtsealove.com.github.BuslinkerDrivers;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +17,6 @@ import io.socket.emitter.Emitter;
 import mtsealove.com.github.BuslinkerDrivers.Design.RecyleAdater;
 import mtsealove.com.github.BuslinkerDrivers.Entity.RunInfo;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -30,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
     EditText searchET;
+    private String ID, Name;
+    private int cat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,24 +48,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //뷰 초기화
         recyclerView = findViewById(R.id.recycleView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        //이전 액티비티로부터 데이터 수신
+        Intent intent = getIntent();
+        ID = intent.getStringExtra("ID");
+        Log.e("회사ID", ID);
+        Name = intent.getStringExtra("Name");
+        cat = intent.getIntExtra("cat", 0);
+
         ConnectSocket();    //소켓 생성
+
+        Intent RunInfoIntent=new Intent(this, RunInfoActivity.class);
+        RunInfoIntent.putExtra("cat", cat);
+
     }
 
     //소켓
     private Socket mSocket;
 
-    private Emitter.Listener onConnect = new Emitter.Listener() {
+    private Emitter.Listener onConnectCompany = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
 
             String key = searchET.getText().toString();   //검색어
+
             JSONObject data = new JSONObject();
             try {
+                data.put("Company", ID);
+                if (key.length() == 0)
+                    data.put("key", null);
+                else
+                    data.put("key", key);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            mSocket.emit("GetRunInfo", data);
+        }
+    };
+    private Emitter.Listener onConnectDriver = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+            String key = searchET.getText().toString();   //검색어
+
+            JSONObject data = new JSONObject();
+            try {
+                data.put("DriverID", ID);
                 if (key.length() == 0)
                     data.put("key", null);
                 else
@@ -78,28 +112,29 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    String TAG = "결과";
-    // 서버로부터 전달받은 'chat-message' Event 처리.
+    //데이터 수신 후 이벤트
     private Emitter.Listener onMessageReceived = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             runInfos = new ArrayList<>(); //어댑터용
-            // 전달받은 데이터는 아래와 같이 추출할 수 있습니다.
+
             try {
                 JSONArray receivedData = (JSONArray) args[0];
                 for (int i = 0; i < receivedData.length(); i++) {
                     JSONObject object = receivedData.getJSONObject(i);
                     String startAddr = object.getString("startAddr");
-                    String startTime = ((object.getString("startTime")).substring(5, 10) + " " + (object.getString("startTime")).substring(11, 16)).replace('-', '/') + " 출발";
+                    String startTime = (object.getString("startTime")).substring(0, 5) + " 출발";
                     String endAddr = object.getString("endAddr");
-                    String endTime = ((object.getString("endTime")).substring(5, 10) + " " + (object.getString("endTime")).substring(11, 16)).replace('-', '/') + "도착 예정";
+                    String endTime = (object.getString("endTime")).substring(0, 5) + "도착 예정";
                     int wayloadCnt = ((object.getString("wayloadAddrs")).split(";;")).length;
                     int cost = object.getInt("charge");
+                    int infoID = object.getInt("ID");
 
-                    runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost));
+                    runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID));
                 }
 
                 adapter = new RecyleAdater(MainActivity.this, runInfos);
+                ((RecyleAdater) adapter).setCompanyID(ID);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -123,13 +158,19 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
     private void ConnectSocket() {
         Log.e("운행정보", "실행");
         try {
-            mSocket = IO.socket("http://192.168.10.31:3000");   //서버 주소
+            mSocket = IO.socket(LoginActivity.IP);   //서버 주소
             mSocket.connect();
-            mSocket.on(Socket.EVENT_CONNECT, onConnect);
+            if (cat == 1) { //업체 회원
+                mSocket.on(Socket.EVENT_CONNECT, onConnectCompany);
+            } else if (cat == 0) { //개인 회원
+                mSocket.on(Socket.EVENT_CONNECT, onConnectDriver);
+            }
             mSocket.on("RunInfo", onMessageReceived);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

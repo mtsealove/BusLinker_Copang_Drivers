@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">BusLinker 기사용</string>
+    <!--운행정보 정렬기준-->
     <string-array name="sort_by">
         <item>가까운 출발지</item>
         <item>낮은 운행시간</item>
@@ -7,4 +8,13 @@
         <item>적은 경유지</item>
         <item>많은 경유지</item>
     </string-array>
+    <!--기사님 정렬 기준-->
+    <string-array name="sort_by_driver">
+        <item>ID</item>
+        <item>차종</item>
+        <item>연식</item>
+        <item>이름</item>
+    </string-array>
+
+    <string name="kakao_key">bd92a886956d8c7f8781b64817def5e0</string>
 </resources>

@@ -1,9 +1,7 @@
 package mtsealove.com.github.BuslinkerDrivers;
 
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,19 +11,19 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import mtsealove.com.github.BuslinkerDrivers.Accounts.SignUpActivity;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class LoginActivity extends AppCompatActivity {
-    final String IP = "http://192.168.1.50:3300";
+    //final String IP = "http://192.168.1.50:3000";
+    //final static String IP ="http://172.30.11.20:3000";    //스타벅스
+    //final static String IP="http://192.168.43.191:3000";
+    //final static String IP = "http://192.168.43.191:3000"; //폰
+    //final static  String IP="http://172.16.36.118:3000";    //GC_free_wifi
+    final static String IP="http://192.168.10.31:3000"; //재단
+    final int BusDriver = 0, BusCompany = 1;
 
     private TextView SignUpTV;
     //로그인 폼
@@ -105,8 +103,6 @@ public class LoginActivity extends AppCompatActivity {
                 data.put("password", password);
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                Log.e("JSON", data.toString());
             }
             mSocket.emit("Login", data);
         }
@@ -123,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                 JSONObject receivedData = (JSONObject) args[0];
                 String Name = receivedData.getString("Name");
                 String ID = receivedData.getString("ID");
+                int cat = receivedData.getInt("cat");
                 Log.d(TAG, Name);
                 Log.d(TAG, ID);
                 mSocket.disconnect();
@@ -136,8 +133,9 @@ public class LoginActivity extends AppCompatActivity {
                     });
                 } else {    //메인 화면으로 이동
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("email", email);
-                    intent.putExtra("name", Name);
+                    intent.putExtra("cat", cat);
+                    intent.putExtra("ID", email);
+                    intent.putExtra("Name", Name);
                     startActivity(intent);
                     finish();
                 }
@@ -164,9 +162,8 @@ public class LoginActivity extends AppCompatActivity {
     };
 
     private void ConnectSocket() {
-        Log.e("연결 메서드", "실행");
         try {
-            mSocket = IO.socket("http://192.168.10.31:3000");   //서버 주소
+            mSocket = IO.socket(IP);   //서버 주소
             mSocket.connect();
             mSocket.on(Socket.EVENT_CONNECT, onConnect);
             mSocket.on("serverMessage", onMessageReceived);
