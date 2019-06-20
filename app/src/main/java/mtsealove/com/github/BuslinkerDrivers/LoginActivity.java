@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, ID);
                 mSocket.disconnect();
 
-                if (ID.equals("none")) { //쿼리 실패
+                if (cat==3) { //ID 또는 비밀번호 오류
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -1,164 +1,86 @@
 package mtsealove.com.github.BuslinkerDrivers;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-import mtsealove.com.github.BuslinkerDrivers.Entity.RunInfo;
-import net.daum.mf.map.api.*;
+import mtsealove.com.github.BuslinkerDrivers.Design.LoadAdapter;
+import mtsealove.com.github.BuslinkerDrivers.Entity.Load;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class RunInfoActivity extends AppCompatActivity {
-    final int RequestDriverSet=300;
+    final int RequestDriverSet = 300;
     int RunInfoID;
-    private TextView startAddrTV, startTimeTV, endAddrTV, endTimeTV, costTV, simpleTV, detailTV, setDriverTV;
+    private TextView startAddrTV, startTimeTV, endAddrTV, endTimeTV, costTV, detailTV, setDriverTV;
+    RecyclerView contentView;
+    RecyclerView.LayoutManager layoutManager;
     private Button setDriverBtn;
     ScrollView scrollView;
-    float MaxHeight;
-    int MinHeight;
-    DisplayMetrics metrics;
     private int cat;
     private String ID;
+    private String DriverID = null;
+    private ArrayList<Load> loads;
 
-    private LinearLayout wayloadLayout, DetailLayout;
-    MapView mapView;
-    Geocoder geocoder;
+    //컨텐츠
+    LoadAdapter adapter;
+
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_info);
-        startAddrTV = findViewById(R.id.startAddrTV);
-        startTimeTV = findViewById(R.id.startTimeTV);
-        endAddrTV = findViewById(R.id.endAddrTV);
-        endTimeTV = findViewById(R.id.endTimeTV);
+
         costTV = findViewById(R.id.costTV);
-        simpleTV = findViewById(R.id.simpleTV);
         detailTV = findViewById(R.id.detailTV);
-        setDriverTV=findViewById(R.id.setDriverTV);
-        scrollView = findViewById(R.id.scrollView);
-        wayloadLayout = findViewById(R.id.wayloadLayout);
-        DetailLayout = findViewById(R.id.DetailLayout);
-        mapView = findViewById(R.id.MapLayout);
-        mapView.setZoomLevel(9, true);
+        setDriverTV = findViewById(R.id.setDriverTV);
+
+        contentView=findViewById(R.id.contentView);
+        contentView.setHasFixedSize(true);
+        layoutManager=new LinearLayoutManager(this);
+        contentView.setLayoutManager(layoutManager);
+
         setDriverBtn = findViewById(R.id.setDriverBtn);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("불러오는 중입니다");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         final Intent intent = getIntent();
         RunInfoID = intent.getIntExtra("RunInfoID", 0);
-        ID=intent.getStringExtra("CompanyID");
+        ID = intent.getStringExtra("CompanyID");
         cat = intent.getIntExtra("cat", 0);
         if (cat == 0)
             setDriverBtn.setVisibility(View.GONE);
 
-        Log.e("ID", ID);
-
         ConnectSocket();
-        geocoder = new Geocoder(this);
 
-        metrics = getApplicationContext().getResources().getDisplayMetrics();//화면 크기
-        MinHeight = metrics.heightPixels - 200; //최소 높이
 
-        DetailLayout.setY(MaxHeight);
-
-        //움직임에 따른 상세 뷰 위치 조정
-        DetailLayout.setOnTouchListener(DetailTouchListener);
-
-        detailTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MaxHeight = simpleTV.getY() + ((View) simpleTV.getParent()).getY();   //최대 높이
-                MoveView(DetailLayout, MaxHeight, false);
-            }
-        });
-
+        //기사 선택
         setDriverTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1=new Intent(RunInfoActivity.this, SetDriverActivity.class);
-                intent1.putExtra("CompanyID", ID);
+                Intent intent1 = new Intent(RunInfoActivity.this, SetDriverActivity.class);
+                intent1.putExtra("CompanyID", ID);  //회사 ID 전달
                 startActivityForResult(intent1, RequestDriverSet);
             }
         });
     }
-
-    private boolean Opend = false;
-    private ArrayList<Float> Increase = new ArrayList<>();
-    View.OnTouchListener DetailTouchListener = new View.OnTouchListener() { //하단 뷰 움직이기
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            ViewGroup.LayoutParams params = DetailLayout.getLayoutParams();
-            MaxHeight = simpleTV.getY() + ((View) simpleTV.getParent()).getY();   //최대 높이
-
-            int ActionID = motionEvent.getAction();
-            switch (ActionID) {
-                case MotionEvent.ACTION_DOWN:   //단순 터치 이벤트
-                    break;
-                case MotionEvent.ACTION_MOVE:   //움직임 이벤트
-                    if (motionEvent.getRawY() > MaxHeight && motionEvent.getRawY() < MinHeight) {
-                        DetailLayout.setY(motionEvent.getRawY());
-                        params.height = metrics.heightPixels;
-                        DetailLayout.setLayoutParams(params);
-                        Increase.add(motionEvent.getRawY());
-                    }
-                    break;
-                case MotionEvent.ACTION_UP: //손을 땟을 때
-                    if (Increase.size() >= 2) {
-                        if (Increase.get(0) > Increase.get(1)) {
-                            MoveView(DetailLayout, MaxHeight, false);
-                        } else {
-                            MoveView(DetailLayout, MinHeight, true);
-                        }
-                        Increase = new ArrayList<>();  //제거
-                    }
-                    break;
-            }
-            return false;
-        }
-    };
-
-    private void MoveView(View view, float Height, boolean Max) {   //뷰 움직이기
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.height = metrics.heightPixels;
-        view.setLayoutParams(params);
-        if (Max) {  //닫기
-            Opend = false;
-            while (view.getY() < Height) {
-                view.setY(view.getY() + 1);
-            }
-        } else {    //열기
-            Opend = true;
-            while (view.getY() > Height) {
-                view.setY(view.getY() - 1);
-            }
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (Opend)  //열려있다면 닫기
-            MoveView(DetailLayout, MinHeight, true);
-        else {
-            super.onBackPressed();
-        }
-    }
-
-    ;
 
     //소켓
     private Socket mSocket;
@@ -186,91 +108,41 @@ public class RunInfoActivity extends AppCompatActivity {
 
             // 전달받은 데이터는 아래와 같이 추출할 수 있습니다.
             try {
-
+                loads=new ArrayList<>();
                 Log.e(TAG, args[0].toString());
                 JSONObject object = (JSONObject) args[0];
 
+                final String startName=object.getString("startName");
                 final String startAddr = object.getString("startAddr");
                 final String startTime = (object.getString("startTime")).substring(0, 5) + " 출발";
+                final String endName=object.getString("endName");
                 final String endAddr = object.getString("endAddr");
                 final String endTime = (object.getString("endTime")).substring(0, 5) + "도착 예정";
+                //경유지
+                final String[] wayloadNames=(object.getString("wayloadNames")).split(";;");
                 final String[] wayloadCats = (object.getString("wayloadCats")).split(";;");
                 final String[] wayloadAddrs = (object.getString("wayloadAddrs")).split(";;");
+
                 final int cost = object.getInt("charge");
+
+                //출발지 먼저 추가
+                loads.add(new Load(RunInfoActivity.this, "출발",startName, startAddr, startTime));
+                for (int i = 0; i < wayloadCats.length; i++) {
+                    loads.add(new Load(RunInfoActivity.this, wayloadNames[i], wayloadCats[i], wayloadAddrs[i], null));
+                }
+                loads.add(new Load(RunInfoActivity.this, "도착",endName, endAddr, endTime));
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //텍스트 표시
-                        startAddrTV.setText(startAddr);
-                        startTimeTV.setText(startTime);
-                        endAddrTV.setText(endAddr);
-                        endTimeTV.setText(endTime);
                         costTV.setText(cost + "원");
-
-
-                        Address StartAddress = null, EndAddress = null;
-                        //지도에 표시
-                        try {   //출발 도착
-                            MapPOIItem startPoint = new MapPOIItem();
-                            StartAddress = geocoder.getFromLocationName(startAddr, 1).get(0);
-                            startPoint.setItemName(startAddr);
-                            startPoint.setTag(0);
-                            startPoint.setMapPoint(MapPoint.mapPointWithGeoCoord(StartAddress.getLatitude(), StartAddress.getLongitude()));
-                            startPoint.setMarkerType(MapPOIItem.MarkerType.BluePin);
-                            startPoint.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
-                            mapView.addPOIItem(startPoint);
-                            EndAddress = geocoder.getFromLocationName(endAddr, 1).get(0);
-                            MapPOIItem endPoint = new MapPOIItem();
-                            endPoint.setItemName(endAddr);
-                            endPoint.setTag(1);
-                            endPoint.setMapPoint(MapPoint.mapPointWithGeoCoord(EndAddress.getLatitude(), EndAddress.getLongitude()));
-                            endPoint.setMarkerType(MapPOIItem.MarkerType.BluePin);
-                            endPoint.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
-                            mapView.addPOIItem(endPoint);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        MapPolyline polyline = new MapPolyline();
-                        polyline.setTag(2000);
-                        polyline.setLineColor(getColor(R.color.colorPrimary));
-                        polyline.addPoint(MapPoint.mapPointWithGeoCoord(StartAddress.getLatitude(), StartAddress.getLongitude()));  //시작 주소 추가
-
-                        LayoutInflater inflater = getLayoutInflater();
-                        for (int i = 0; i < wayloadCats.length; i++) {
-                            //텍스트로 표시
-                            View view = inflater.inflate(R.layout.adapter_wayloads, null);
-                            TextView catTV = view.findViewById(R.id.catTV);
-                            TextView addressTV = view.findViewById(R.id.addressTV);
-                            TextView showMapTV = view.findViewById(R.id.showMapTV);
-                            catTV.setText(wayloadCats[i]);
-                            addressTV.setText(wayloadAddrs[i]);
-                            wayloadLayout.addView(view);
-                            //마커 표시
-                            try {
-                                Address address = geocoder.getFromLocationName(wayloadAddrs[i], 1).get(0);
-                                polyline.addPoint(MapPoint.mapPointWithGeoCoord(address.getLatitude(), address.getLongitude()));
-                                MapPOIItem marker = new MapPOIItem();
-                                marker.setItemName("주소: " + wayloadAddrs[i] + " 종류: " + wayloadCats[i]);
-                                marker.setMapPoint(MapPoint.mapPointWithGeoCoord(address.getLatitude(), address.getLongitude()));
-                                marker.setMarkerType(MapPOIItem.MarkerType.BluePin);
-                                marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
-                                mapView.addPOIItem(marker);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        polyline.addPoint(MapPoint.mapPointWithGeoCoord(EndAddress.getLatitude(), EndAddress.getLongitude()));  //도착 주소 추가
-                        mapView.addPolyline(polyline);
-
-                        MapPointBounds mapPointBounds = new MapPointBounds(polyline.getMapPoints());
-                        int padding = 100;
-                        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
-
+                        //어댑터 생성 및 적용
+                        adapter=new LoadAdapter(RunInfoActivity.this, loads);
+                        contentView.setAdapter(adapter);
                     }
                 });
+
             } catch (Exception e) {
                 Log.e("Err", e.toString());
                 e.printStackTrace();
@@ -283,6 +155,7 @@ public class RunInfoActivity extends AppCompatActivity {
 
             } finally {
                 mSocket.disconnect();
+                progressDialog.dismiss();
             }
         }
     };
@@ -300,13 +173,15 @@ public class RunInfoActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(resultCode==RESULT_OK){
-            switch (requestCode){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
                 case RequestDriverSet:
-
+                    String driverID = data.getStringExtra("DriverID");
+                    String driverName = data.getStringExtra("DriverName");
+                    this.DriverID = driverID; // 기사 ID 설정
+                    setDriverTV.setText(driverName + " 기사님");
                     break;
-
             }
         }
     }

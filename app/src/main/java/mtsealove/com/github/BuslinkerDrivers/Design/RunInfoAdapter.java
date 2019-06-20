@@ -15,13 +15,14 @@ import mtsealove.com.github.BuslinkerDrivers.RunInfoActivity;
 
 import java.util.List;
 
-public class RecyleAdater extends RecyclerView.Adapter<RecyleAdater.ViewHolder> {
+public class RunInfoAdapter extends RecyclerView.Adapter<RunInfoAdapter.ViewHolder> {
     Context context;
     List<RunInfo> runInfos;
     String CompanyID;
     String userID;
+    int cat;
 
-    public RecyleAdater(Context context, List<RunInfo> runInfos) {
+    public RunInfoAdapter(Context context, List<RunInfo> runInfos) {
         this.context = context;
         this.runInfos = runInfos;
     }
@@ -51,6 +52,7 @@ public class RecyleAdater extends RecyclerView.Adapter<RecyleAdater.ViewHolder> 
                 intent.putExtra("RunInfoID", runInfo.getID());
                 intent.putExtra("CompanyID", CompanyID);
                 intent.putExtra("userID", userID);
+                intent.putExtra("cat", cat);
                 context.startActivity(intent);
             }
         });
@@ -61,7 +63,7 @@ public class RecyleAdater extends RecyclerView.Adapter<RecyleAdater.ViewHolder> 
         return runInfos.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView startAddr, startTime, endAddr, endTime, wayloadCnt, cost;
         CardView cardView;
 
@@ -83,5 +85,13 @@ public class RecyleAdater extends RecyclerView.Adapter<RecyleAdater.ViewHolder> 
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public int getCat() {
+        return cat;
+    }
+
+    public void setCat(int cat) {
+        this.cat = cat;
     }
 }

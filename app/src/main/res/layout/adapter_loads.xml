@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    android:id="@+id/cardView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:padding="10dp">
+
+        <!--출발지-->
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:id="@+id/catTV"
+                      android:text="출발"
+                      android:textColor="@color/black"
+                      android:textSize="16sp"
+                      android:textStyle="bold"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_marginLeft="10dp"
+                      android:layout_toRightOf="@id/catTV"
+                      android:textSize="14sp"
+                      android:textColor="@color/hint"
+                      android:id="@+id/timeTV"
+                      android:text="출발시간"/>
+        </RelativeLayout>
+        <!--주소-->
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:id="@+id/nameTV"
+                      android:text="이름"
+                      android:textColor="@color/black"
+                      android:textSize="16sp"
+                      android:textStyle="bold"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_marginLeft="10dp"
+                      android:layout_toRightOf="@id/nameTV"
+                      android:textColor="@color/black"
+                      android:textSize="16sp"
+                      android:id="@+id/addressTV"
+                      android:text="서울시 광진구 아차산로 55길 43"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

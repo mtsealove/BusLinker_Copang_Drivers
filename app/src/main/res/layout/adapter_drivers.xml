@@ -13,7 +13,7 @@
 
         <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/name"
+                      android:id="@+id/nameTV"
                       android:text="이름"
                       android:textColor="@color/black"
                       android:textSize="16sp"
@@ -21,7 +21,7 @@
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:layout_marginLeft="10dp"
-                      android:layout_toRightOf="@id/name"
+                      android:layout_toRightOf="@id/nameTV"
                       android:textColor="@color/black"
                       android:textSize="16sp"
                       android:id="@+id/nameTV"
@@ -31,7 +31,7 @@
         <!--ID-->
         <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/ID"
+                      android:id="@+id/nameTV"
                       android:text="ID"
                       android:textColor="@color/black"
                       android:textSize="16sp"
@@ -39,7 +39,7 @@
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:layout_marginLeft="10dp"
-                      android:layout_toRightOf="@id/ID"
+                      android:layout_toRightOf="@id/nameTV"
                       android:textColor="@color/black"
                       android:textSize="16sp"
                       android:id="@+id/IDTV"

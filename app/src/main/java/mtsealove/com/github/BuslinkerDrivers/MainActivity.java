@@ -14,7 +14,7 @@ import android.widget.Toast;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import mtsealove.com.github.BuslinkerDrivers.Design.RecyleAdater;
+import mtsealove.com.github.BuslinkerDrivers.Design.RunInfoAdapter;
 import mtsealove.com.github.BuslinkerDrivers.Entity.RunInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,9 +62,6 @@ public class MainActivity extends AppCompatActivity {
         cat = intent.getIntExtra("cat", 0);
 
         ConnectSocket();    //소켓 생성
-
-        Intent RunInfoIntent=new Intent(this, RunInfoActivity.class);
-        RunInfoIntent.putExtra("cat", cat);
 
     }
 
@@ -133,8 +130,9 @@ public class MainActivity extends AppCompatActivity {
                     runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID));
                 }
 
-                adapter = new RecyleAdater(MainActivity.this, runInfos);
-                ((RecyleAdater) adapter).setCompanyID(ID);
+                adapter = new RunInfoAdapter(MainActivity.this, runInfos);
+                ((RunInfoAdapter) adapter).setCompanyID(ID);
+                ((RunInfoAdapter)adapter).setCat(cat);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
