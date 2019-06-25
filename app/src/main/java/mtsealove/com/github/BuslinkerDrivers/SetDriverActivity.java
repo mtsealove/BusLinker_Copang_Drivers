@@ -1,9 +1,11 @@
 package mtsealove.com.github.BuslinkerDrivers;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,12 +35,11 @@ import java.util.List;
 import java.util.SortedMap;
 
 public class SetDriverActivity extends AppCompatActivity {
-    String companyID;
+    private String companyID, RunDate;
     RecyclerView contentView;
     List<Driver> drivers;
     DriverAdapter driverAdapter;
     RecyclerView.LayoutManager layoutManager;
-    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class SetDriverActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         companyID = intent.getStringExtra("CompanyID");    //회사 ID
+        RunDate=intent.getStringExtra("RunDate");
         ConnectSocket();
 
     }
@@ -60,7 +62,7 @@ public class SetDriverActivity extends AppCompatActivity {
 
     private void ConnectSocket() {
         try {
-            socket = IO.socket(LoginActivity.IP);
+            socket = IO.socket(SetIPActivity.IP);
             socket.connect();
             socket.on(Socket.EVENT_CONNECT, onConnect);
             socket.on("FreeDriver", onReceived);
@@ -84,9 +86,9 @@ public class SetDriverActivity extends AppCompatActivity {
             });
             JSONObject data = new JSONObject();
             try {
-                //ID와 현재 날짜를 넘겨줌
+                //ID와 운행 날짜를 넘겨줌
                 data.put("CompanyID", companyID);
-                data.put("date", dateFormat.format(new Date()));
+                data.put("date", RunDate);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -108,7 +110,6 @@ public class SetDriverActivity extends AppCompatActivity {
                     final int CarYear = object.getInt("CarYear");
                     final String Contact = object.getString("Contact");
 
-                    Log.e("기사정보", Name + " " + ID + " " + CarType + " " + CarYear + " " + Contact);
                     drivers.add(new Driver(Name, ID, CarType, CarYear, Contact));
                 }
                 driverAdapter = new DriverAdapter(SetDriverActivity.this, drivers);
@@ -118,6 +119,7 @@ public class SetDriverActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         contentView.setAdapter(driverAdapter);
+
                         contentView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
                             @Override
                             public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
@@ -125,28 +127,12 @@ public class SetDriverActivity extends AppCompatActivity {
                                 if(child!=null){
                                     int position=recyclerView.getChildAdapterPosition(child);
                                     final Driver driver=drivers.get(position);
-
-                                    AlertDialog.Builder builder=new AlertDialog.Builder(SetDriverActivity.this);
-                                    builder.setTitle("선택 확인")
-                                            .setMessage(driver.getName()+"기사님을 선택하셨습니다.\n계속하시겠습니까?")
-                                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    dialog.dismiss();
-                                                }
-                                            }).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    runOnUiThread(new Runnable() {
                                         @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialog.dismiss();
-                                            Intent resultIntent=new Intent();
-                                            resultIntent.putExtra("DriverID", driver.getID());
-                                            resultIntent.putExtra("DriverName", driver.getName());
-                                            setResult(RESULT_OK, resultIntent);
-                                            finish();
+                                        public void run() {
+                                            MakeConfirmDialog(driver.getName(), driver.getID());
                                         }
                                     });
-                                    dialog=builder.create();
-                                    dialog.show();
                                 }
                                 return false;
                             }
@@ -161,21 +147,50 @@ public class SetDriverActivity extends AppCompatActivity {
 
                             }
                         });
+                        progressDialog.dismiss();
                     }
                 });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            progressDialog.dismiss();
         }
     };
 
+    //기사님 선택 확인 다이얼로그 생성
+    AlertDialog confirmDialog=null;
+    private void MakeConfirmDialog(final String DriverName, final String DriverID){
+        AlertDialog.Builder builder = new AlertDialog.Builder(SetDriverActivity.this);
+        builder.setTitle("선택 확인")
+                .setMessage(DriverName + "기사님을 선택하셨습니다.\n계속하시겠습니까?")
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                }).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //결과 반환
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("DriverID", DriverID);
+                resultIntent.putExtra("DriverName", DriverName);
+                setResult(RESULT_OK, resultIntent);
+                confirmDialog.dismiss();
+                ((Activity)SetDriverActivity.this).finish();
+            }
+        });
+        confirmDialog = builder.create();
+        confirmDialog.show();
+    }
+
     @Override
-    public void onDestroy() {
+    public void onDestroy(){
+        Log.e("SetDriver", "onDestroy");
+        confirmDialog.dismiss();
         super.onDestroy();
-        if (dialog!=null) {
-            dialog.dismiss();
-            dialog = null;
-        }
+    }
+    @Override
+    public void onStop(){
+        Log.e("SetDriver", "onStop");
+        super.onStop();
     }
 }

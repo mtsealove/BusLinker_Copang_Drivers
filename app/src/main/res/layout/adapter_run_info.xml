@@ -1,102 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                    android:id="@+id/cardView"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="10dp">
+<LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:padding="10dp">
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/RunDateTV"
+              android:textSize="25sp"
+              android:textColor="@color/black"
+              android:text="운행날짜"/>
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                        android:id="@+id/cardView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp">
 
-        <!--출발지-->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:padding="10dp">
 
-        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/carYear"
-                      android:text="출발지"
-                      android:textColor="@color/black"
-                      android:textSize="16sp"
-                      android:textStyle="bold"/>
+            <!--출발지-->
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:layout_marginLeft="10dp"
-                      android:layout_toRightOf="@id/carYear"
-                      android:textColor="@color/black"
-                      android:textSize="16sp"
-                      android:id="@+id/startTV"
-                      android:text="서울시 광진구 어쩌구"/>
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/carYear"
+                          android:text="출발지"
+                          android:textColor="@color/black"
+                          android:textSize="16sp"
+                          android:textStyle="bold"/>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/startTimeTV"
-                      android:layout_marginTop="2dp"
-                      android:layout_marginLeft="10dp"
-                      android:text="5/29 19:00 출발"
-                      android:layout_toRightOf="@id/carYear"
-                      android:layout_below="@id/startTV"/>
-        </RelativeLayout>
-        <!--도착지-->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_marginLeft="10dp"
+                          android:layout_toRightOf="@id/carYear"
+                          android:textColor="@color/black"
+                          android:textSize="16sp"
+                          android:id="@+id/startTV"
+                          android:text="서울시 광진구 어쩌구"/>
 
-        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/carType"
-                      android:text="도착지"
-                      android:textColor="@color/black"
-                      android:textSize="16sp"
-                      android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/startTimeTV"
+                          android:layout_marginTop="2dp"
+                          android:layout_marginLeft="10dp"
+                          android:text="5/29 19:00 출발"
+                          android:layout_toRightOf="@id/carYear"
+                          android:layout_below="@id/startTV"/>
+            </RelativeLayout>
+            <!--도착지-->
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:layout_marginLeft="10dp"
-                      android:layout_toRightOf="@id/carType"
-                      android:textColor="@color/black"
-                      android:textSize="16sp"
-                      android:id="@+id/IDTV"
-                      android:text="서울시 광진구 어쩌구"/>
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/carType"
+                          android:text="도착지"
+                          android:textColor="@color/black"
+                          android:textSize="16sp"
+                          android:textStyle="bold"/>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/endTimeTV"
-                      android:layout_marginTop="2dp"
-                      android:layout_marginLeft="10dp"
-                      android:text="5/29 19:00 출발"
-                      android:layout_toRightOf="@id/carType"
-                      android:layout_below="@id/IDTV"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_marginLeft="10dp"
+                          android:layout_toRightOf="@id/carType"
+                          android:textColor="@color/black"
+                          android:textSize="16sp"
+                          android:id="@+id/IDTV"
+                          android:text="서울시 광진구 어쩌구"/>
 
-        </RelativeLayout>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/endTimeTV"
+                          android:layout_marginTop="2dp"
+                          android:layout_marginLeft="10dp"
+                          android:text="5/29 19:00 출발"
+                          android:layout_toRightOf="@id/carType"
+                          android:layout_below="@id/IDTV"/>
 
-        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/wayload"
-                      android:text="경유지"
-                      android:textColor="@color/black"
-                      android:textSize="16sp"
-                      android:textStyle="bold"/>
+            </RelativeLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:layout_marginLeft="10dp"
-                      android:layout_toRightOf="@id/wayload"
-                      android:textColor="@color/black"
-                      android:textSize="16sp"
-                      android:id="@+id/wayloadTV"
-                      android:text="3개"/>
-        </RelativeLayout>
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/wayload"
+                          android:text="경유지"
+                          android:textColor="@color/black"
+                          android:textSize="16sp"
+                          android:textStyle="bold"/>
 
-        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:layout_marginLeft="7.5dp"
-                  android:id="@+id/cost"
-                  android:text="금액"
-                  android:textColor="@color/black"
-                  android:textSize="16sp"
-                  android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_marginLeft="10dp"
+                          android:layout_toRightOf="@id/wayload"
+                          android:textColor="@color/black"
+                          android:textSize="16sp"
+                          android:id="@+id/wayloadTV"
+                          android:text="3개"/>
+            </RelativeLayout>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:layout_marginLeft="17.5dp"
-                  android:layout_toRightOf="@id/cost"
-                  android:textColor="@color/colorAccent"
-                  android:textSize="16sp"
-                  android:id="@+id/costTV"
-                  android:text="95000원"/>
-    </RelativeLayout>
-    </LinearLayout>
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_marginLeft="7.5dp"
+                          android:id="@+id/cost"
+                          android:text="금액"
+                          android:textColor="@color/black"
+                          android:textSize="16sp"
+                          android:textStyle="bold"/>
 
-</android.support.v7.widget.CardView>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_marginLeft="17.5dp"
+                          android:layout_toRightOf="@id/cost"
+                          android:textColor="@color/colorAccent"
+                          android:textSize="16sp"
+                          android:id="@+id/costTV"
+                          android:text="95000원"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

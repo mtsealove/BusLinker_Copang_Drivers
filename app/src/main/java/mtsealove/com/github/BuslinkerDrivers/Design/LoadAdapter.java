@@ -2,7 +2,9 @@ package mtsealove.com.github.BuslinkerDrivers.Design;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.drm.ProcessedData;
 import android.location.Location;
@@ -11,6 +13,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import mtsealove.com.github.BuslinkerDrivers.Entity.Load;
 import mtsealove.com.github.BuslinkerDrivers.Entity.RunInfo;
 import mtsealove.com.github.BuslinkerDrivers.R;
@@ -76,7 +80,27 @@ public class LoadAdapter extends RecyclerView.Adapter<LoadAdapter.ViewHolder> {
                     }
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     context.startActivity(intent);
-                }catch (Exception e){
+                }catch (ActivityNotFoundException e){   //카카오맵이 설치되어 있지 않은 경우
+                    AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                    builder.setTitle("알림")
+                            .setMessage("카카오맵이 설치되어 있지 않습니다\n플레이스토어로 연결하시겠습니까?")
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            }).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String url="https://play.google.com/store/apps/details?id=net.daum.android.map";
+                            Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            context.startActivity(intent);
+                        }
+                    });
+                    AlertDialog dialog=builder.create();
+                    dialog.show();
+
+                } catch (Exception e){
                     e.printStackTrace();
                 }
             }

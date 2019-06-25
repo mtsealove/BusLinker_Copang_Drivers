@@ -5,11 +5,14 @@ public class RunInfo {
     String startTime;
     String endAddr;
     String endTime;
+    String RunDate;
+    String ContractStart, ContractEnd;
+
     int wayloadCnt;
     int cost;
     int ID;
 
-    public RunInfo(String startAddr, String startTime, String endAddr, String endTime, int wayloadCnt, int cost, int id){
+    public RunInfo(String startAddr, String startTime, String endAddr, String endTime, int wayloadCnt, int cost, int id, String RunDate){
         this.startAddr=startAddr;
         this.startTime=startTime;
         this.endAddr=endAddr;
@@ -17,6 +20,7 @@ public class RunInfo {
         this.wayloadCnt=wayloadCnt;
         this.cost=cost;
         this.ID=id;
+        this.RunDate=RunDate;
     }
 
     public String getStartAddr() {
@@ -73,5 +77,29 @@ public class RunInfo {
 
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public String getRunDate() {
+        return RunDate;
+    }
+
+    public void setRunDate(String runDate) {
+        RunDate = runDate;
+    }
+
+    public String getContractStart() {
+        return ContractStart;
+    }
+
+    public void setContractStart(String contractStart) {
+        ContractStart = contractStart;
+    }
+
+    public String getContractEnd() {
+        return ContractEnd;
+    }
+
+    public void setContractEnd(String contractEnd) {
+        ContractEnd = contractEnd;
     }
 }

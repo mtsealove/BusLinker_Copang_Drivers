@@ -11,6 +11,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import mtsealove.com.github.BuslinkerDrivers.Accounts.SignUpActivity;
+import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,10 +23,10 @@ public class LoginActivity extends AppCompatActivity {
     //final static String IP="http://192.168.43.191:3000";
     //final static String IP = "http://192.168.43.191:3000"; //폰
     //final static  String IP="http://172.16.36.118:3000";    //GC_free_wifi
-    final static String IP="http://192.168.10.31:3000"; //재단
+    //final static String IP="http://192.168.10.31:3000"; //재단
     final int BusDriver = 0, BusCompany = 1;
 
-    private TextView SignUpTV;
+    private TextView SignUpTV, findPwTV;
     //로그인 폼
     private EditText emailET, passwordET;
     private Button loginBtn;
@@ -48,11 +49,23 @@ public class LoginActivity extends AppCompatActivity {
         emailET = findViewById(R.id.emailET);
         passwordET = findViewById(R.id.passwordET);
         keepCB = findViewById(R.id.keepCB);
+        findPwTV=findViewById(R.id.findPwTV);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Login();
+            }
+        });
+
+        SystemUiTuner systemUiTuner=new SystemUiTuner(this);
+        systemUiTuner.setStatusBarWhite();
+
+        findPwTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(LoginActivity.this, SetIPActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -163,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void ConnectSocket() {
         try {
-            mSocket = IO.socket(IP);   //서버 주소
+            mSocket = IO.socket(SetIPActivity.IP);   //서버 주소
             mSocket.connect();
             mSocket.on(Socket.EVENT_CONNECT, onConnect);
             mSocket.on("serverMessage", onMessageReceived);

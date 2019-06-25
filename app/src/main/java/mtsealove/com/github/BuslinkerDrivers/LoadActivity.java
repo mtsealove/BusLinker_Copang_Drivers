@@ -16,13 +16,14 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 
+import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Permission;
 import java.util.ArrayList;
 
 public class LoadActivity extends AppCompatActivity {
-
+File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +33,13 @@ public class LoadActivity extends AppCompatActivity {
         systemUiTuner.setStatusBarWhite();
 
         requestPermission();
+        ReadIP();
     }
 
     private void Login() {
                 Intent intent=new Intent(LoadActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
     }
 
     private void requestPermission() {  //권한 체크
@@ -65,4 +68,20 @@ public class LoadActivity extends AppCompatActivity {
             },2000);
         }
     };
+
+    void ReadIP(){  //IP 읽기
+        file=new File(getFilesDir()+"ip.dat");
+        try {
+            BufferedReader bufferedReader=new BufferedReader(new FileReader(file));
+            String tmp="";
+            while ((tmp=bufferedReader.readLine())!=null){
+                SetIPActivity.IP=tmp;
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

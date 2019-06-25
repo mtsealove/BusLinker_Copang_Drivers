@@ -44,6 +44,7 @@ public class RunInfoAdapter extends RecyclerView.Adapter<RunInfoAdapter.ViewHold
         viewHolder.endTime.setText(runInfo.getEndTime());
         viewHolder.wayloadCnt.setText(runInfo.getWayloadCnt() + "개 ");
         viewHolder.cost.setText(runInfo.getCost() + "원");
+        viewHolder.RunDateTV.setText(runInfo.getRunDate());
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,11 +65,12 @@ public class RunInfoAdapter extends RecyclerView.Adapter<RunInfoAdapter.ViewHold
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView startAddr, startTime, endAddr, endTime, wayloadCnt, cost;
+        TextView startAddr, startTime, endAddr, endTime, wayloadCnt, cost, RunDateTV;
         CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            RunDateTV=itemView.findViewById(R.id.RunDateTV);
             cardView=itemView.findViewById(R.id.cardView);
             startAddr = itemView.findViewById(R.id.startTV);
             startTime = itemView.findViewById(R.id.startTimeTV);

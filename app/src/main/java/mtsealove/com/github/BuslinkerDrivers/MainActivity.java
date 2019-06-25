@@ -15,6 +15,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import mtsealove.com.github.BuslinkerDrivers.Design.RunInfoAdapter;
+import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 import mtsealove.com.github.BuslinkerDrivers.Entity.RunInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        //상태바
+        SystemUiTuner sut=new SystemUiTuner(this);
+        sut.setStatusBarWhite();
 
         //이전 액티비티로부터 데이터 수신
         Intent intent = getIntent();
@@ -117,17 +122,29 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 JSONArray receivedData = (JSONArray) args[0];
+                Log.e("운행정보", receivedData.toString());
                 for (int i = 0; i < receivedData.length(); i++) {
                     JSONObject object = receivedData.getJSONObject(i);
                     String startAddr = object.getString("startAddr");
                     String startTime = (object.getString("startTime")).substring(0, 5) + " 출발";
                     String endAddr = object.getString("endAddr");
                     String endTime = (object.getString("endTime")).substring(0, 5) + "도착 예정";
+                    String ContractStart=(object.getString("ContractStart")).substring(0, 10);
+                    String ContractEnd=(object.getString("ContractEnd")).substring(0,10);
+                    String RunDate=null;
+                    try{
+                        RunDate=(object.getString("RunDate")).substring(0, 10);
+                    } catch (Exception e){
+                    }
+
                     int wayloadCnt = ((object.getString("wayloadAddrs")).split(";;")).length;
                     int cost = object.getInt("charge");
                     int infoID = object.getInt("ID");
 
-                    runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID));
+                    if(RunDate!=null)
+                        runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID, RunDate));
+                    else
+                        runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID, ContractStart+"~"+ContractEnd));
                 }
 
                 adapter = new RunInfoAdapter(MainActivity.this, runInfos);
@@ -160,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     private void ConnectSocket() {
         Log.e("운행정보", "실행");
         try {
-            mSocket = IO.socket(LoginActivity.IP);   //서버 주소
+            mSocket = IO.socket(SetIPActivity.IP);   //서버 주소
             mSocket.connect();
             if (cat == 1) { //업체 회원
                 mSocket.on(Socket.EVENT_CONNECT, onConnectCompany);
