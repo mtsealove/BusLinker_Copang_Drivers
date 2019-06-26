@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class PrevRunInfoActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<RunInfo> runInfos;
     RecyclerView.Adapter adapter;
@@ -43,7 +43,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_prev_run_info);
+
+//이전 액티비티로부터 데이터 수신
+        Intent intent = getIntent();
+        ID = intent.getStringExtra("ID");
+
         searchET = findViewById(R.id.searchET);
         searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -62,25 +67,22 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        accountView=findViewById(R.id.accountView);
-        drawerLayout=findViewById(R.id.drawerLayout);
-        MenuBtn=findViewById(R.id.backBtn);
+        accountView = findViewById(R.id.accountView);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        MenuBtn = findViewById(R.id.backBtn);
+
+        accountView.setParentActivitName("PrevRunInfo");
+        accountView.setName(Name, cat);
 
         //상태바
-        SystemUiTuner sut=new SystemUiTuner(this);
+        SystemUiTuner sut = new SystemUiTuner(this);
         sut.setStatusBarWhite();
 
-        //이전 액티비티로부터 데이터 수신
-        Intent intent = getIntent();
-        ID = intent.getStringExtra("ID");
-        Log.e("회사ID", ID);
         Name = intent.getStringExtra("Name");
         cat = intent.getIntExtra("cat", 0);
 
         accountView.setName(Name, cat);
         accountView.setUserID(ID);
-        accountView.setParentActivitName("Main");
-        accountView.setUserName(Name);
 
         //메뉴 버튼 클릭
         MenuBtn.setOnClickListener(new View.OnClickListener() {
@@ -91,32 +93,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ConnectSocket();    //소켓 생성
-
     }
 
     //소켓
     private Socket mSocket;
 
-    private Emitter.Listener onConnectCompany = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-
-            String key = searchET.getText().toString();   //검색어
-
-            JSONObject data = new JSONObject();
-            try {
-                data.put("Company", ID);
-                if (key.length() == 0)
-                    data.put("key", null);
-                else
-                    data.put("key", key);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            mSocket.emit("GetRunInfo", data);
-        }
-    };
     private Emitter.Listener onConnectDriver = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -134,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            mSocket.emit("GetRunInfo", data);
+            mSocket.emit("GetPrevRunInfo", data);
         }
     };
 
@@ -146,34 +127,31 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 JSONArray receivedData = (JSONArray) args[0];
-                Log.e("운행정보", receivedData.toString());
                 for (int i = 0; i < receivedData.length(); i++) {
                     JSONObject object = receivedData.getJSONObject(i);
                     String startAddr = object.getString("startAddr");
                     String startTime = (object.getString("startTime")).substring(0, 5) + " 출발";
                     String endAddr = object.getString("endAddr");
                     String endTime = (object.getString("endTime")).substring(0, 5) + "도착 예정";
-                    String ContractStart=(object.getString("ContractStart")).substring(2, 10);
-                    String ContractEnd=(object.getString("ContractEnd")).substring(2,10);
-                    String RunDate=null;
-                    try{
-                        RunDate=(object.getString("RunDate")).substring(2, 10);
-                    } catch (Exception e){
+                    String ContractStart = (object.getString("ContractStart")).substring(2, 10);
+                    String ContractEnd = (object.getString("ContractEnd")).substring(2, 10);
+                    String RunDate = null;
+                    try {
+                        RunDate = (object.getString("RunDate")).substring(2, 10);
+                    } catch (Exception e) {
                     }
 
                     int wayloadCnt = ((object.getString("wayloadAddrs")).split(";;")).length;
                     int cost = object.getInt("charge");
                     int infoID = object.getInt("ID");
 
-                    if(RunDate!=null)
+                    if (RunDate != null)
                         runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID, RunDate));
-                    else
-                        runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID, ContractStart+"~"+ContractEnd));
                 }
 
-                adapter = new RunInfoAdapter(MainActivity.this, runInfos);
+                adapter = new RunInfoAdapter(PrevRunInfoActivity.this, runInfos);
                 ((RunInfoAdapter) adapter).setCompanyID(ID);
-                ((RunInfoAdapter)adapter).setCat(cat);
+                ((RunInfoAdapter) adapter).setCat(cat);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -187,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(MainActivity.this, "서버 연결 실패", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PrevRunInfoActivity.this, "서버 연결 실패", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -203,12 +181,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             mSocket = IO.socket(SetIPActivity.IP);   //서버 주소
             mSocket.connect();
-            if (cat == 1) { //업체 회원
-                mSocket.on(Socket.EVENT_CONNECT, onConnectCompany);
-            } else if (cat == 0) { //개인 회원
-                mSocket.on(Socket.EVENT_CONNECT, onConnectDriver);
-            }
-            mSocket.on("RunInfo", onMessageReceived);
+            mSocket.on(Socket.EVENT_CONNECT, onConnectDriver);
+            mSocket.on("PrevRunInfo", onMessageReceived);
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -216,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        if(drawerLayout.isDrawerOpen(Gravity.START)){
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
             drawerLayout.closeDrawer(Gravity.START);
         } else {
             super.onBackPressed();

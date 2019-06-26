@@ -185,7 +185,8 @@ public class SetDriverActivity extends AppCompatActivity {
     @Override
     public void onDestroy(){
         Log.e("SetDriver", "onDestroy");
-        confirmDialog.dismiss();
+        if(confirmDialog!=null)
+            confirmDialog.dismiss();
         super.onDestroy();
     }
     @Override

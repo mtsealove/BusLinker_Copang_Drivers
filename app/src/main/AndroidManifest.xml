@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Accounts.LoginActivity">
         </activity>
         <activity android:name=".Accounts.SignUpActivity">
         </activity>
@@ -41,6 +41,8 @@
         <activity android:name=".SetDriverActivity">
         </activity>
         <activity android:name=".SetIPActivity">
+        </activity>
+        <activity android:name=".PrevRunInfoActivity">
         </activity>
     </application>
 

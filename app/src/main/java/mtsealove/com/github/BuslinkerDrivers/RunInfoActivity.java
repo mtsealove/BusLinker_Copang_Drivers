@@ -34,6 +34,7 @@ public class RunInfoActivity extends AppCompatActivity {
     final int RequestDriverSet = 300;
     int RunInfoID;
     private TextView costTV, setDriverTV, setDateTV;
+    private LinearLayout setDriverLayout;
     RecyclerView contentView;
     RecyclerView.LayoutManager layoutManager;
     private Button setDriverBtn;
@@ -64,6 +65,7 @@ public class RunInfoActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         contentView.setLayoutManager(layoutManager);
 
+        setDriverLayout=findViewById(R.id.setDriverLayout);
         setDriverBtn = findViewById(R.id.setDriverBtn);
 
         SystemUiTuner sut = new SystemUiTuner(this);
@@ -78,8 +80,10 @@ public class RunInfoActivity extends AppCompatActivity {
         RunInfoID = intent.getIntExtra("RunInfoID", 0);
         ID = intent.getStringExtra("CompanyID");
         cat = intent.getIntExtra("cat", 0);
+
+        //버스 기사일 경우 레이아웃 감추기
         if (cat == 0)
-            setDriverBtn.setVisibility(View.GONE);
+            setDriverLayout.setVisibility(View.GONE);
         else {
             setDriverBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -136,9 +140,13 @@ public class RunInfoActivity extends AppCompatActivity {
         initRunDate();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        DatePicker datePicker = new DatePicker(this);
+        //DatePicker datePicker = new DatePicker(this);
+        View view=getLayoutInflater().inflate(R.layout.view_set_rundate, null);
+        DatePicker datePicker=view.findViewById(R.id.datePicker);
+        TextView cancelBtn=view.findViewById(R.id.cancelBtn);
+        TextView confirmBtn=view.findViewById(R.id.confirmBtn);
 
-        builder.setView(datePicker);
+        builder.setView(view);
         datePicker.init(year, month-1, date, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
@@ -147,21 +155,24 @@ public class RunInfoActivity extends AppCompatActivity {
                 date = i2;
             }
         });
-        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        }).setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                RunDate = year + "-" + month + "-" + date;
-                setDateTV.setText(RunDate);
-            }
-        });
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFffff")));
         dialog.show();
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RunDate = year + "-" + month + "-" + date;
+                setDateTV.setText(RunDate);
+                dialog.dismiss();
+            }
+        });
     }
 
     //소켓

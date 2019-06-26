@@ -1,4 +1,4 @@
-package mtsealove.com.github.BuslinkerDrivers;
+package mtsealove.com.github.BuslinkerDrivers.Accounts;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,20 +10,17 @@ import android.widget.*;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import mtsealove.com.github.BuslinkerDrivers.Accounts.SignUpActivity;
 import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
+import mtsealove.com.github.BuslinkerDrivers.MainActivity;
+import mtsealove.com.github.BuslinkerDrivers.R;
+import mtsealove.com.github.BuslinkerDrivers.SetIPActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.*;
 import java.net.URISyntaxException;
 
 public class LoginActivity extends AppCompatActivity {
-    //final String IP = "http://192.168.1.50:3000";
-    //final static String IP ="http://172.30.11.20:3000";    //스타벅스
-    //final static String IP="http://192.168.43.191:3000";
-    //final static String IP = "http://192.168.43.191:3000"; //폰
-    //final static  String IP="http://172.16.36.118:3000";    //GC_free_wifi
-    //final static String IP="http://192.168.10.31:3000"; //재단
     final int BusDriver = 0, BusCompany = 1;
 
     private TextView SignUpTV, findPwTV;
@@ -31,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailET, passwordET;
     private Button loginBtn;
     private CheckBox keepCB;    //로그인 유지
+    boolean LogOuted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +67,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        LogOuted=getIntent().getBooleanExtra("Logout", false);
+        if(!LogOuted)
+            ReadAccount();
+        else{
+            WriteAccount(null, null);
+        }
     }
 
     private String email, password;
@@ -79,12 +83,65 @@ public class LoginActivity extends AppCompatActivity {
         password = passwordET.getText().toString();
         boolean keep = keepCB.isChecked();
 
-
         //입력  무결성 체크
         if (email.length() == 0) Toast.makeText(this, "이메일을 입력하세요", Toast.LENGTH_SHORT).show();
         else if (password.length() == 0) Toast.makeText(this, "비밀번호를 입력하세요", Toast.LENGTH_SHORT).show();
         else {
+            if(keep){   //ID 비번 저장
+                WriteAccount(email, password);
+            } else{
+                WriteAccount(null, null);
+            }
+
             ConnectSocket();
+        }
+    }
+
+    private File acFile;
+    //단말에 ID와 비밀번호 저장
+    private void WriteAccount(String email, String password){
+        acFile=new File(getFilesDir()+"ac.dat");
+        if(email!=null) {
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(acFile));
+                bw.write(email);
+
+                bw.newLine();
+                bw.write(password);
+                bw.flush();
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            try {   //사용자 정보 삭제
+                BufferedWriter bw = new BufferedWriter(new FileWriter(acFile, false));
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //저장된 Pw 읽기
+    private void ReadAccount(){
+        acFile=new File(getFilesDir()+"ac.dat");
+        try {
+            BufferedReader br=new BufferedReader(new FileReader(acFile));
+            String email=br.readLine();
+            String pw=br.readLine();
+            br.close();
+            //로그인 진행
+            if(email!=null&&email.length()!=0) {
+                emailET.setText(email);
+                passwordET.setText(pw);
+                keepCB.setChecked(true);
+                loginBtn.performClick();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -105,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     progressDialog = new ProgressDialog(LoginActivity.this);
-                    progressDialog.setMessage("로딩중");
+                    progressDialog.setMessage("로그인중");
                     progressDialog.show();
                 }
             });

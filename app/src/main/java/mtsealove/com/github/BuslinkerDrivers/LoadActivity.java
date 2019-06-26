@@ -1,25 +1,17 @@
 package mtsealove.com.github.BuslinkerDrivers;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import mtsealove.com.github.BuslinkerDrivers.Accounts.LoginActivity;
 import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Permission;
 import java.util.ArrayList;
 
 public class LoadActivity extends AppCompatActivity {
