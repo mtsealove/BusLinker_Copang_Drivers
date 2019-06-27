@@ -17,4 +17,6 @@
     </string-array>
 
     <string name="kakao_key">bd92a886956d8c7f8781b64817def5e0</string>
+    <string name="default_notification_channel_name">Firebase Chanel</string>
+    <string name="default_notification_channel_id">3000</string>
 </resources>

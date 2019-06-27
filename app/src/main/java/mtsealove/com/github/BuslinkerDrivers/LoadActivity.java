@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -13,6 +14,7 @@ import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 
 import java.io.*;
 import java.util.ArrayList;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoadActivity extends AppCompatActivity {
 File file;
@@ -26,6 +28,9 @@ File file;
 
         requestPermission();
         ReadIP();
+
+        String tokken=FirebaseInstanceId.getInstance().getToken();
+        Log.e("토큰", tokken);
     }
 
     private void Login() {

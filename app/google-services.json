@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "139144752753",
+    "firebase_url": "https://buslinkercopang.firebaseio.com",
+    "project_id": "buslinkercopang",
+    "storage_bucket": "buslinkercopang.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139144752753:android:7bd2c7568a5fdc06",
+        "android_client_info": {
+          "package_name": "mtsealove.com.github.buslinker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "139144752753-q7b1iucqvvmlpsmb26j3or4pv4hqrvup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIgjzjmIhn4RTKd-4gXCmV1DQ51uYkTcw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139144752753-q7b1iucqvvmlpsmb26j3or4pv4hqrvup.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

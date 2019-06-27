@@ -1,5 +1,6 @@
 package mtsealove.com.github.BuslinkerDrivers;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -156,6 +157,7 @@ public class PrevRunInfoActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         recyclerView.setAdapter(adapter);
+                        progressDialog.dismiss();
                     }
                 });
 
@@ -175,8 +177,12 @@ public class PrevRunInfoActivity extends AppCompatActivity {
         }
     };
 
-
+ProgressDialog progressDialog;
     private void ConnectSocket() {
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("데이터를 가져오는 중입니다");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         Log.e("운행정보", "실행");
         try {
             mSocket = IO.socket(SetIPActivity.IP);   //서버 주소
@@ -185,6 +191,8 @@ public class PrevRunInfoActivity extends AppCompatActivity {
             mSocket.on("PrevRunInfo", onMessageReceived);
 
         } catch (URISyntaxException e) {
+            progressDialog.dismiss();
+            Toast.makeText(this, "데이터 가져오기 실패", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
