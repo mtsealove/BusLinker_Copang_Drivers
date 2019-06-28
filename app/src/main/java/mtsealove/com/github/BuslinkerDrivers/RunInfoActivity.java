@@ -1,12 +1,17 @@
 package mtsealove.com.github.BuslinkerDrivers;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -128,7 +133,7 @@ public class RunInfoActivity extends AppCompatActivity {
 
         //운행일자의 초기값은 오늘
         year = Integer.parseInt(Fyear.format(today));
-        month = Integer.parseInt(Fmonth.format(today));
+        month = Integer.parseInt(Fmonth.format(today))-1;
         date = Integer.parseInt(Fdate.format(today));
         RunDate = year + "-" + month + "-" + date;
     }
@@ -139,41 +144,18 @@ public class RunInfoActivity extends AppCompatActivity {
     private void setRunDate() {
         initRunDate();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //DatePicker datePicker = new DatePicker(this);
-        View view=getLayoutInflater().inflate(R.layout.view_set_rundate, null);
-        DatePicker datePicker=view.findViewById(R.id.datePicker);
-        TextView cancelBtn=view.findViewById(R.id.cancelBtn);
-        TextView confirmBtn=view.findViewById(R.id.confirmBtn);
-
-        builder.setView(view);
-        datePicker.init(year, month-1, date, new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                year = i;
-                month = i1 + 1;
-                date = i2;
-            }
-        });
-        final AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFffff")));
-        dialog.show();
-
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        confirmBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RunDate = year + "-" + month + "-" + date;
-                setDateTV.setText(RunDate);
-                dialog.dismiss();
-            }
-        });
+        DatePickerDialog datePickerDialog=new DatePickerDialog(this, dateSetListener, year, month, date);
+        //datePickerDialog.getDatePicker().setMinDate(new Date().getTime());
+        datePickerDialog.show();
     }
+
+    private DatePickerDialog.OnDateSetListener dateSetListener=new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+            RunDate=i+"-"+(i1+1)+"-"+i2;
+            setDateTV.setText(RunDate);
+        }
+    };
 
     //소켓
     private Socket mSocket;
@@ -195,6 +177,7 @@ public class RunInfoActivity extends AppCompatActivity {
 
     String TAG = "결과";
     private Emitter.Listener onMessageReceived = new Emitter.Listener() {
+        @SuppressLint("MissingPermission")
         @Override
         public void call(Object... args) {
             //데이터 파싱
@@ -223,16 +206,16 @@ public class RunInfoActivity extends AppCompatActivity {
                 }
                 loads.add(new Load(RunInfoActivity.this, "도착", endName, endAddr, endTime));
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //텍스트 표시
-                        costTV.setText(cost + "원");
-                        //어댑터 생성 및 적용
-                        adapter = new LoadAdapter(RunInfoActivity.this, loads);
-                        contentView.setAdapter(adapter);
-                    }
-                });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                costTV.setText(cost + "원");
+                                //텍스트 표시
+                                //어댑터 생성 및 적용
+                                adapter = new LoadAdapter(RunInfoActivity.this, loads);
+                                contentView.setAdapter(adapter);
+                            }
+                        });
 
             } catch (Exception e) {
                 Log.e("Err", e.toString());

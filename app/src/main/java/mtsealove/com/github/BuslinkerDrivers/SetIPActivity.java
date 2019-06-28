@@ -23,7 +23,7 @@ public class SetIPActivity extends AppCompatActivity {
 
         file=new File(getFilesDir()+"ip.dat");
         try{
-            ipET.setText((IP.replace("http://", "")).replace(":3000", ""));
+            ipET.setText((IP.replace("http://", "")).replace(":3200", ""));
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,7 +37,7 @@ public class SetIPActivity extends AppCompatActivity {
     }
 
     void WriteIP(){
-        String IP="http://"+ipET.getText().toString()+":3000";
+        String IP="http://"+ipET.getText().toString()+":3200";
         try {
             BufferedWriter bw=new BufferedWriter(new FileWriter(file));
             bw.write(IP);

@@ -37,19 +37,18 @@ public class LoadAdapter extends RecyclerView.Adapter<LoadAdapter.ViewHolder> {
     public LoadAdapter(Context context, List<Load> loads) {
         this.context = context;
         this.loads = loads;
+        getCurrentLocation();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        getCurrentLocation();
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_loads, viewGroup, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int i) {
-        getCurrentLocation();
         final Load load = loads.get(i);
         viewHolder.Cat.setText(load.getCat());
         viewHolder.Address.setText(load.getAddress());
@@ -131,8 +130,37 @@ public class LoadAdapter extends RecyclerView.Adapter<LoadAdapter.ViewHolder> {
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Location currentLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        latitude=currentLocation.getLatitude();
-        longitude=currentLocation.getLongitude();
+        try{
+            Location currentLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitude=currentLocation.getLatitude();
+            longitude=currentLocation.getLongitude();
+        } catch (Exception e){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+            e.printStackTrace();
+        }
+
     }
+
+    LocationListener locationListener=new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            latitude=location.getLatitude();
+            longitude=location.getLongitude();
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
 }

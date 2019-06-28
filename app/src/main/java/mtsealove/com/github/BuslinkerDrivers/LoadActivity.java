@@ -28,9 +28,6 @@ File file;
 
         requestPermission();
         ReadIP();
-
-        String tokken=FirebaseInstanceId.getInstance().getToken();
-        Log.e("토큰", tokken);
     }
 
     private void Login() {

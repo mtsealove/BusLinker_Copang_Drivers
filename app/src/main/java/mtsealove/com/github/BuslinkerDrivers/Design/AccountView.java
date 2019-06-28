@@ -131,7 +131,7 @@ public class AccountView extends LinearLayout {
             Intent intent=new Intent(context, PrevRunInfoActivity.class);
             intent.putExtra("ID", UserID);
             intent.putExtra("Name", UserName);
-            ((Activity)context).startActivity(intent);
+            context.startActivity(intent);
         }
     }
 

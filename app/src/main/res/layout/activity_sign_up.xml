@@ -43,7 +43,7 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="이메일 주소"
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/emailET"/>
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
@@ -53,7 +53,7 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="비밀번호"
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/pwET"/>
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
@@ -63,7 +63,7 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="비밀번호 확인"
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/pwConfirmET"/>
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
@@ -73,18 +73,20 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="이름"
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/nameET"/>
 
             <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:id="@+id/birthLayout"
                             android:background="@drawable/background_input"
                             android:clickable="true"
+                            android:onClick="setBirth"
                             android:layout_marginTop="15dp">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:text="생년월일"
                           android:textSize="18sp"
                           android:textColor="@color/hint"
                           android:paddingVertical="5dp"
-                          android:paddingLeft="10dp"/>
+                          android:paddingLeft="10dp" android:id="@+id/birthTV"/>
 
                 <ImageView android:layout_width="25dp" android:layout_height="25dp"
                            android:layout_centerVertical="true"
@@ -105,15 +107,17 @@
                           android:paddingLeft="10dp"/>
 
                 <RadioGroup android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:id="@+id/genderRG"
                             android:orientation="horizontal"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="10dp">
                     <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                 android:text="남성"
-                                 android:checked="true"/>
+                                 android:id="@+id/maleRB"
+                                 android:text="남성"/>
 
                     <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                 android:id="@+id/femaleRB"
                                  android:text="여성"/>
 
                 </RadioGroup>
@@ -127,7 +131,7 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="업체 ID"
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/companyET"/>
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
@@ -137,7 +141,7 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="자기 소개\n간단하게 쓰시면 됩니다."
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/prET"/>
 
             <!--차량 정보-->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -154,25 +158,30 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="보유 차종"
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/carTypeET"/>
 
             <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:background="@drawable/background_input">
                 <ImageView android:layout_width="25dp" android:layout_height="25dp"
+                           android:layout_marginLeft="10dp"
                            android:layout_centerVertical="true"
-                           android:src="@drawable/btn_left"/>
+                           android:src="@drawable/btn_left"
+                           android:onClick="YearDown"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/carYearTV"
                           android:layout_centerInParent="true"
                           android:text="연식: 2019"
                           android:textSize="18sp"
                           android:textColor="@color/hint"
-                          android:paddingVertical="5dp" />
+                          android:paddingVertical="5dp"/>
 
                 <ImageView android:layout_width="25dp" android:layout_height="25dp"
+                           android:layout_marginRight="10dp"
                            android:layout_centerVertical="true"
                            android:layout_alignParentRight="true"
-                           android:src="@drawable/btn_right"/>
+                           android:src="@drawable/btn_right"
+                           android:onClick="YearUp"/>
             </RelativeLayout>
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -183,7 +192,14 @@
                       android:background="@drawable/background_input"
                       android:textSize="18sp"
                       android:hint="차량번호"
-                      android:textColorHint="@color/hint"/>
+                      android:textColorHint="@color/hint" android:id="@+id/carNumberET"/>
+
+            <Button android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/btn_primary"
+                    android:text="회원가입 신청"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" android:id="@+id/registerBtn"/>
         </LinearLayout>
     </ScrollView>
 

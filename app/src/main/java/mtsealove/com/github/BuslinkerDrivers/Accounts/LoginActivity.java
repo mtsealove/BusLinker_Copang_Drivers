@@ -16,6 +16,7 @@ import mtsealove.com.github.BuslinkerDrivers.R;
 import mtsealove.com.github.BuslinkerDrivers.SetIPActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -171,6 +172,8 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 data.put("email", email);
                 data.put("password", password);
+                //토큰 전송
+                data.put("tokken", FirebaseInstanceId.getInstance().getToken());
             } catch (Exception e) {
                 e.printStackTrace();
             }
