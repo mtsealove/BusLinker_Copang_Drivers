@@ -37,7 +37,7 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="10dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textEmailAddress"
                       android:background="@drawable/background_input"
@@ -47,7 +47,7 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textPassword"
                       android:background="@drawable/background_input"
@@ -57,7 +57,7 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textPassword"
                       android:background="@drawable/background_input"
@@ -67,7 +67,7 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textPersonName"
                       android:background="@drawable/background_input"
@@ -85,7 +85,7 @@
                           android:text="생년월일"
                           android:textSize="18sp"
                           android:textColor="@color/hint"
-                          android:paddingVertical="5dp"
+                          android:paddingVertical="10dp"
                           android:paddingLeft="10dp" android:id="@+id/birthTV"/>
 
                 <ImageView android:layout_width="25dp" android:layout_height="25dp"
@@ -103,7 +103,7 @@
                           android:text="성별"
                           android:textSize="18sp"
                           android:textColor="@color/hint"
-                          android:paddingVertical="5dp"
+                          android:paddingVertical="10dp"
                           android:paddingLeft="10dp"/>
 
                 <RadioGroup android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -125,7 +125,17 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
+                      android:paddingLeft="10dp"
+                      android:inputType="phone"
+                      android:background="@drawable/background_input"
+                      android:textSize="18sp"
+                      android:hint="연락처"
+                      android:textColorHint="@color/hint" android:id="@+id/contactET"/>
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textPersonName"
                       android:background="@drawable/background_input"
@@ -135,7 +145,7 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textMultiLine"
                       android:background="@drawable/background_input"
@@ -152,7 +162,7 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textPersonName"
                       android:background="@drawable/background_input"
@@ -174,7 +184,7 @@
                           android:text="연식: 2019"
                           android:textSize="18sp"
                           android:textColor="@color/hint"
-                          android:paddingVertical="5dp"/>
+                          android:paddingVertical="10dp"/>
 
                 <ImageView android:layout_width="25dp" android:layout_height="25dp"
                            android:layout_marginRight="10dp"
@@ -186,7 +196,7 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:layout_marginTop="15dp"
-                      android:paddingVertical="5dp"
+                      android:paddingVertical="10dp"
                       android:paddingLeft="10dp"
                       android:inputType="textPersonName"
                       android:background="@drawable/background_input"
@@ -194,9 +204,151 @@
                       android:hint="차량번호"
                       android:textColorHint="@color/hint" android:id="@+id/carNumberET"/>
 
+            <!--차량 사진-->
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:textColor="@color/black"
+                      android:textSize="25sp"
+                      android:text="차량사진"/>
+
+            <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:rowCount="2"
+                        android:orientation="horizontal">
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_columnWeight="3" android:id="@+id/photoFrontBtn">
+
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp"
+                               android:src="@drawable/icon_photo" android:id="@+id/photoFrontIV"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_marginLeft="10dp"
+                              android:textSize="20sp"
+                              android:textColor="@color/black"
+                              android:text="차량 정면"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_columnWeight="2" android:id="@+id/photoSideBtn">
+
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp"
+                               android:src="@drawable/icon_photo" android:id="@+id/photoSideIV"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_marginLeft="10dp"
+                              android:textSize="20sp"
+                              android:textColor="@color/black"
+                              android:text="차량 측면"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_columnWeight="3" android:id="@+id/photoWholeSeatBtn">
+
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp"
+                               android:src="@drawable/icon_photo" android:id="@+id/photoWholeSeatIV"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_marginLeft="10dp"
+                              android:textSize="20sp"
+                              android:textColor="@color/black"
+                              android:text="좌석 전체"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_columnWeight="2" android:id="@+id/photoSeatBtn">
+
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp"
+                               android:src="@drawable/icon_photo" android:id="@+id/photoSeatIV"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_marginLeft="10dp"
+                              android:textSize="20sp"
+                              android:textColor="@color/black"
+                              android:text="좌석"/>
+                </LinearLayout>
+
+            </GridLayout>
+
+            <!--등록 서류-->
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_marginTop="15dp"
+                      android:textColor="@color/black"
+                      android:textSize="25sp"
+                      android:text="등록 서류"/>
+
+            <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:rowCount="2"
+                        android:orientation="horizontal">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_columnWeight="2" android:id="@+id/licenseBtn">
+
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp"
+                               android:src="@drawable/icon_photo" android:id="@+id/LicenseIV"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_marginLeft="10dp"
+                              android:textSize="20sp"
+                              android:textColor="@color/black"
+                              android:text="버스운전 자격증"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_columnWeight="3" android:id="@+id/insureBtn">
+
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp"
+                               android:src="@drawable/icon_photo" android:id="@+id/insureIV"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_marginLeft="10dp"
+                          android:textSize="20sp"
+                          android:textColor="@color/black"
+                          android:text="보험증서"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_columnWeight="3" android:id="@+id/registrationBtn">
+
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp"
+                               android:src="@drawable/icon_photo" android:id="@+id/registrationIV"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:layout_marginLeft="10dp"
+                              android:textSize="20sp"
+                              android:textColor="@color/black"
+                              android:text="차량 등록증"/>
+                </LinearLayout>
+
+            </GridLayout>
+
             <Button android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/btn_primary"
+                    style="?android:attr/borderlessButtonStyle"
                     android:text="회원가입 신청"
                     android:textColor="@color/white"
                     android:textSize="20sp" android:id="@+id/registerBtn"/>
