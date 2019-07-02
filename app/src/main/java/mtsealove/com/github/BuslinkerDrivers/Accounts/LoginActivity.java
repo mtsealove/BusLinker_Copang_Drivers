@@ -186,18 +186,33 @@ public class LoginActivity extends AppCompatActivity {
     private Emitter.Listener onMessageReceived = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            // 전달받은 데이터는 아래와 같이 추출할 수 있습니다.
+            // 데이터 파싱
             try {
 
                 JSONObject receivedData = (JSONObject) args[0];
                 String Name = receivedData.getString("Name");
                 String ID = receivedData.getString("ID");
+                int confirmed=1;
                 int cat = receivedData.getInt("cat");
                 Log.d(TAG, Name);
                 Log.d(TAG, ID);
                 mSocket.disconnect();
 
-                if (cat==3) { //ID 또는 비밀번호 오류
+                try {
+                    confirmed=receivedData.getInt("Confirmed");
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                //아직 회원 수락이 되지 않았다면
+                if(confirmed!=1){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginActivity.this, "회원가입 대기중입니다.\n승인 후 이용해 주세요", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else if (cat==3) { //ID 또는 비밀번호 오류
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -213,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 }
 
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(new Runnable() {
                     @Override

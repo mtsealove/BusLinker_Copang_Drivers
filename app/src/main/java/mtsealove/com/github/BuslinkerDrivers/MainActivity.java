@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private AccountView accountView;
     DrawerLayout drawerLayout;
     ImageView MenuBtn;
+    TextView noWorkTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         accountView=findViewById(R.id.accountView);
         drawerLayout=findViewById(R.id.drawerLayout);
         MenuBtn=findViewById(R.id.backBtn);
+        noWorkTV=findViewById(R.id.noWorkTV);
 
         //상태바
         SystemUiTuner sut=new SystemUiTuner(this);
@@ -171,6 +173,15 @@ public class MainActivity extends AppCompatActivity {
                     else
                         runInfos.add(new RunInfo(startAddr, startTime, endAddr, endTime, wayloadCnt, cost, infoID, ContractStart+"~"+ContractEnd));
                 }
+                if(runInfos.size()==0){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            noWorkTV.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        }
+                    });
+                }
 
                 adapter = new RunInfoAdapter(MainActivity.this, runInfos);
                 ((RunInfoAdapter) adapter).setCompanyID(ID);
@@ -223,12 +234,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private final long FINISH_INTERVAL_TIME = 2000;
+    private long backPressedTime = 0;
+
     @Override
     public void onBackPressed(){
         if(drawerLayout.isDrawerOpen(Gravity.START)){
             drawerLayout.closeDrawer(Gravity.START);
         } else {
-            super.onBackPressed();
+            long tempTime = System.currentTimeMillis();
+            long intervalTime = tempTime - backPressedTime;
+
+            if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime)
+            {
+                super.onBackPressed();
+            }
+            else {
+                backPressedTime = tempTime;
+                Toast.makeText(getApplicationContext(), "뒤로가기를 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

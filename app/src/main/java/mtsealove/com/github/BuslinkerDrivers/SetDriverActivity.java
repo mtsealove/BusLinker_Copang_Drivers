@@ -147,11 +147,17 @@ public class SetDriverActivity extends AppCompatActivity {
 
                             }
                         });
-                        progressDialog.dismiss();
                     }
                 });
             } catch (JSONException e) {
                 e.printStackTrace();
+            } finally {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                });
             }
         }
     };
@@ -174,8 +180,7 @@ public class SetDriverActivity extends AppCompatActivity {
                 resultIntent.putExtra("DriverID", DriverID);
                 resultIntent.putExtra("DriverName", DriverName);
                 setResult(RESULT_OK, resultIntent);
-                confirmDialog.dismiss();
-                ((Activity)SetDriverActivity.this).finish();
+                finish();
             }
         });
         confirmDialog = builder.create();
