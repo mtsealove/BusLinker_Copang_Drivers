@@ -12,11 +12,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -27,6 +29,7 @@ import io.socket.emitter.Emitter;
 import mtsealove.com.github.BuslinkerDrivers.Design.LoadAdapter;
 import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 import mtsealove.com.github.BuslinkerDrivers.Entity.Load;
+import mtsealove.com.github.BuslinkerDrivers.Restful.RunInfo;
 import org.json.JSONObject;
 
 import java.net.SocketImpl;
@@ -37,23 +40,16 @@ import java.util.Date;
 
 public class RunInfoActivity extends AppCompatActivity {
     final int RequestDriverSet = 300;
-    int RunInfoID;
     private TextView costTV, setDriverTV, setDateTV;
     private LinearLayout setDriverLayout;
+    public static DrawerLayout drawerLayout;
     RecyclerView contentView;
     RecyclerView.LayoutManager layoutManager;
     private Button setDriverBtn;
-    ScrollView scrollView;
     private int cat;
-    private String ID;
-    private String DriverID = null;
-    private ArrayList<Load> loads;
-
 
     //컨텐츠
     LoadAdapter adapter;
-
-
     ProgressDialog progressDialog;
 
     @Override
@@ -61,6 +57,7 @@ public class RunInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_info);
 
+        drawerLayout=findViewById(R.id.drawerLayout);
         costTV = findViewById(R.id.costTV);
         setDriverTV = findViewById(R.id.setDriverTV);
         setDateTV = findViewById(R.id.setDateTV);
@@ -73,19 +70,11 @@ public class RunInfoActivity extends AppCompatActivity {
         setDriverLayout=findViewById(R.id.setDriverLayout);
         setDriverBtn = findViewById(R.id.setDriverBtn);
 
+        //하얀 상태바
         SystemUiTuner sut = new SystemUiTuner(this);
         sut.setStatusBarWhite();
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("불러오는 중입니다");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        final Intent intent = getIntent();
-        RunInfoID = intent.getIntExtra("RunInfoID", 0);
-        ID = intent.getStringExtra("CompanyID");
-        cat = intent.getIntExtra("cat", 0);
-
+        ShowWayLoads();
         //버스 기사일 경우 레이아웃 감추기
         if (cat == 0)
             setDriverLayout.setVisibility(View.GONE);
@@ -93,13 +82,10 @@ public class RunInfoActivity extends AppCompatActivity {
             setDriverBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MakeRunInfoEach();
+                  //  MakeRunInfoEach();
                 }
             });
         }
-
-        ConnectSocket();
-
 
         //기사 선택
         setDriverTV.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +95,7 @@ public class RunInfoActivity extends AppCompatActivity {
                     Toast.makeText(RunInfoActivity.this, "운행 일자를 선택하세요", Toast.LENGTH_SHORT).show();
                 else {
                     Intent intent1 = new Intent(RunInfoActivity.this, SetDriverActivity.class);
-                    intent1.putExtra("CompanyID", ID);  //회사 ID 전달
+                    //intent1.putExtra("CompanyID", ID);  //회사 ID 전달
                     intent1.putExtra("RunDate", RunDate);   //운행일자 전달
                     startActivityForResult(intent1, RequestDriverSet);
                 }
@@ -122,6 +108,29 @@ public class RunInfoActivity extends AppCompatActivity {
                 setRunDate();
             }
         });
+    }
+
+    //운행정보 표시
+    private void ShowWayLoads() {
+        //운행정보 받아오기
+        Intent intent = getIntent();
+        RunInfo runInfo= (RunInfo) intent.getSerializableExtra("RunInfo");
+        //경유지를 분리
+        String[] wayLoadNames=runInfo.getWayloadNames().split(";;");
+        String[] wayLoadAddrs=runInfo.getWayloadAddrs().split(";;");
+        String[] wayLoadCats=runInfo.getWayloadCats().split(";;");
+        //어댑터를 통해 리스트에 추가
+        ArrayList<Load> loads=new ArrayList<>();
+        loads.add(new Load(this, "출발",runInfo.getStartName(), runInfo.getStartAddr(), runInfo.getStartTime()));
+        for(int i=0; i<runInfo.getWayloadCnt(); i++){
+            loads.add(new Load(this, wayLoadNames[i], wayLoadCats[i], wayLoadAddrs[i], null));
+        }
+        loads.add(new Load(this, "도착", runInfo.getEndName(), runInfo.getEndAddr(), runInfo.getEndTime()));
+        //리스트를 화면에 표시
+        LoadAdapter adapter=new LoadAdapter(this, loads);
+        contentView.setAdapter(adapter);
+        //가격 표시
+        costTV.setText(runInfo.getCharge()+"원");
     }
 
     //운행일 초기화
@@ -145,7 +154,6 @@ public class RunInfoActivity extends AppCompatActivity {
         initRunDate();
 
         DatePickerDialog datePickerDialog=new DatePickerDialog(this, dateSetListener, year, month, date);
-        //datePickerDialog.getDatePicker().setMinDate(new Date().getTime());
         datePickerDialog.show();
     }
 
@@ -160,6 +168,7 @@ public class RunInfoActivity extends AppCompatActivity {
     //소켓
     private Socket mSocket;
 
+    /*
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -234,17 +243,7 @@ public class RunInfoActivity extends AppCompatActivity {
         }
     };
 
-    //소켓 생성
-    private void ConnectSocket() {
-        try {
-            mSocket = IO.socket(SetIPActivity.IP);   //서버 주소
-            mSocket.connect();
-            mSocket.on(Socket.EVENT_CONNECT, onConnect);
-            mSocket.on("RunInfoByID", onMessageReceived);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -300,6 +299,7 @@ public class RunInfoActivity extends AppCompatActivity {
         }
     };
 
+    /*
     //운행정보 삽입 결과 반환
     private Emitter.Listener onRunInfoResultReceived = new Emitter.Listener() {
         @Override
@@ -350,4 +350,24 @@ public class RunInfoActivity extends AppCompatActivity {
             }
         }
     };
+
+     */
+
+    public static void openDrawer(){
+        if(!drawerLayout.isDrawerOpen(Gravity.START))
+            drawerLayout.openDrawer(Gravity.START);
+    }
+
+    public static void closeDrawer() {
+        if(drawerLayout.isDrawerOpen(Gravity.START))
+            drawerLayout.closeDrawer(Gravity.START);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(Gravity.START))
+            drawerLayout.closeDrawer(Gravity.START);
+        else
+            super.onBackPressed();
+    }
 }

@@ -1,4 +1,4 @@
-package mtsealove.com.github.BuslinkerDrivers.Design;
+package mtsealove.com.github.BuslinkerDrivers.View;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,18 +9,20 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import mtsealove.com.github.BuslinkerDrivers.Accounts.LoginActivity;
+import mtsealove.com.github.BuslinkerDrivers.MainActivity;
 import mtsealove.com.github.BuslinkerDrivers.PrevRunInfoActivity;
 import mtsealove.com.github.BuslinkerDrivers.R;
-
-import java.io.File;
+import mtsealove.com.github.BuslinkerDrivers.RunInfoActivity;
 
 //사이드 뷰 정의 클래스
 public class AccountView extends LinearLayout {
     private TextView NameTV, RecentRunTV, catTV;
     private LinearLayout AccountBtn, RunLogBtn, LogoutBtn;
+    private ImageView closeBtn;
     private Context context;
     private String ParentActivitName;
 
@@ -62,6 +64,7 @@ public class AccountView extends LinearLayout {
         RunLogBtn=view.findViewById(R.id.RunLogBtn);
         LogoutBtn= view.findViewById(R.id.LogoutBtn);
         catTV=view.findViewById(R.id.catTV);
+        closeBtn=view.findViewById(R.id.closeBtn);
 
         LogoutBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -77,6 +80,13 @@ public class AccountView extends LinearLayout {
             }
         });
         addView(view);
+        ParentActivitName=context.getClass().getSimpleName();
+        closeBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeDrawer();
+            }
+        });
     }
 
     //이름 설정
@@ -126,7 +136,7 @@ public class AccountView extends LinearLayout {
 
     //이전 운행정보
     private void RunLog(){
-        if(ParentActivitName.equals("PrevRunInfo")){
+        if(ParentActivitName.equals("PrevRunInfoActivity")){
         } else {
             Intent intent=new Intent(context, PrevRunInfoActivity.class);
             intent.putExtra("ID", UserID);
@@ -135,7 +145,18 @@ public class AccountView extends LinearLayout {
         }
     }
 
-    public void setParentActivitName(String parentActivitName) {
-        ParentActivitName = parentActivitName;
+    private void closeDrawer() {
+        String contextStr=context.getClass().getSimpleName();
+        switch (contextStr){
+            case "MainActivity":
+                MainActivity.closeDrawer();
+                break;
+            case "RunInfoActivity":
+                RunInfoActivity.closeDrawer();
+                break;
+            case "PrevRunInfoActivity":
+                PrevRunInfoActivity.closeDrawer();
+                break;
+        }
     }
 }

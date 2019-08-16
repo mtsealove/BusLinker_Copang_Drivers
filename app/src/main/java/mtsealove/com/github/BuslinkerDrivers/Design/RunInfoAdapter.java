@@ -1,7 +1,9 @@
 package mtsealove.com.github.BuslinkerDrivers.Design;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import mtsealove.com.github.BuslinkerDrivers.Entity.RunInfo;
 import mtsealove.com.github.BuslinkerDrivers.R;
 import mtsealove.com.github.BuslinkerDrivers.RunInfoActivity;
-
+import mtsealove.com.github.BuslinkerDrivers.Restful.RunInfo;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class RunInfoAdapter extends RecyclerView.Adapter<RunInfoAdapter.ViewHolder> {
@@ -43,17 +46,22 @@ public class RunInfoAdapter extends RecyclerView.Adapter<RunInfoAdapter.ViewHold
         viewHolder.endAddr.setText(runInfo.getEndAddr());
         viewHolder.endTime.setText(runInfo.getEndTime());
         viewHolder.wayloadCnt.setText(runInfo.getWayloadCnt() + "개 ");
-        viewHolder.cost.setText(runInfo.getCost() + "원");
-        viewHolder.RunDateTV.setText(runInfo.getRunDate());
+        viewHolder.cost.setText(runInfo.getCharge() + "원");
+
+        Date date=new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat=new SimpleDateFormat("yy-MM-dd");
+        if(runInfo.getRunDate().equals(dateFormat.format(date))) {
+            viewHolder.RunDateTV.setTextColor(Color.parseColor("#FFFFFF"));
+            viewHolder.RunDateTV.setText(runInfo.getRunDate()+" 오늘");
+        } else
+            viewHolder.RunDateTV.setText(runInfo.getRunDate());
+
 
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(context, RunInfoActivity.class);
-                intent.putExtra("RunInfoID", runInfo.getID());
-                intent.putExtra("CompanyID", CompanyID);
-                intent.putExtra("userID", userID);
-                intent.putExtra("cat", cat);
+                intent.putExtra("RunInfo", runInfo);
                 context.startActivity(intent);
             }
         });

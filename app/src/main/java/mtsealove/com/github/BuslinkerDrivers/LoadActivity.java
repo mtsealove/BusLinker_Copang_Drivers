@@ -14,16 +14,18 @@ import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 
 import java.io.*;
 import java.util.ArrayList;
+
 import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoadActivity extends AppCompatActivity {
-File file;
+    File file;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
 
-        SystemUiTuner systemUiTuner=new SystemUiTuner(LoadActivity.this);
+        SystemUiTuner systemUiTuner = new SystemUiTuner(this);
         systemUiTuner.setStatusBarWhite();
 
         requestPermission();
@@ -31,9 +33,9 @@ File file;
     }
 
     private void Login() {
-                Intent intent=new Intent(LoadActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+        Intent intent = new Intent(LoadActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void requestPermission() {  //권한 체크
@@ -44,7 +46,7 @@ File file;
                 .check();
     }
 
-    PermissionListener permissionListener=new PermissionListener() {
+    PermissionListener permissionListener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
             Login();
@@ -53,23 +55,23 @@ File file;
         @Override
         public void onPermissionDenied(ArrayList<String> deniedPermissions) {
             Toast.makeText(LoadActivity.this, "권한이 거부되었습니다.\n잠시 후 프로그램이 종료됩니다", Toast.LENGTH_LONG).show();
-            Handler handler=new Handler();
+            Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     System.exit(0);
                 }
-            },2000);
+            }, 2000);
         }
     };
 
-    void ReadIP(){  //IP 읽기
-        file=new File(getFilesDir()+"ip.dat");
+    void ReadIP() {  //IP 읽기
+        file = new File(getFilesDir() + "ip.dat");
         try {
-            BufferedReader bufferedReader=new BufferedReader(new FileReader(file));
-            String tmp="";
-            while ((tmp=bufferedReader.readLine())!=null){
-                SetIPActivity.IP=tmp;
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String tmp = "";
+            while ((tmp = bufferedReader.readLine()) != null) {
+                SetIPActivity.IP = tmp;
             }
             bufferedReader.close();
         } catch (FileNotFoundException e) {

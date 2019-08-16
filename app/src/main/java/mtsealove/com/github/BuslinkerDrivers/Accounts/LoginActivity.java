@@ -7,19 +7,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
+import com.google.firebase.iid.FirebaseInstanceId;
 import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
 import mtsealove.com.github.BuslinkerDrivers.MainActivity;
 import mtsealove.com.github.BuslinkerDrivers.R;
+import mtsealove.com.github.BuslinkerDrivers.Restful.API;
+import mtsealove.com.github.BuslinkerDrivers.Restful.LoginData;
+import mtsealove.com.github.BuslinkerDrivers.Restful.Account;
 import mtsealove.com.github.BuslinkerDrivers.SetIPActivity;
-import org.json.JSONException;
-import org.json.JSONObject;
-import com.google.firebase.iid.FirebaseInstanceId;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.io.*;
-import java.net.URISyntaxException;
 
 public class LoginActivity extends AppCompatActivity {
     final int BusDriver = 0, BusCompany = 1;
@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
     private CheckBox keepCB;    //로그인 유지
     boolean LogOuted;
-
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +80,11 @@ public class LoginActivity extends AppCompatActivity {
 
     //로그인
     protected void Login() {
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("로그인중입니다");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         email = emailET.getText().toString();
         password = passwordET.getText().toString();
         boolean keep = keepCB.isChecked();
@@ -93,8 +98,8 @@ public class LoginActivity extends AppCompatActivity {
             } else{
                 WriteAccount(null, null);
             }
-
-            ConnectSocket();
+            //서버 연결 및 로그인 실행
+            PostLogin();
         }
     }
 
@@ -152,111 +157,38 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-    //소켓
-    private Socket mSocket;
-    private ProgressDialog progressDialog;
-    private Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressDialog = new ProgressDialog(LoginActivity.this);
-                    progressDialog.setMessage("로그인중");
-                    progressDialog.show();
-                }
-            });
-
-            JSONObject data = new JSONObject();
-            try {
-                data.put("email", email);
-                data.put("password", password);
-                //토큰 전송
-                data.put("tokken", FirebaseInstanceId.getInstance().getToken());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mSocket.emit("Login", data);
-        }
-    };
-
-    String TAG = "결과";
-    // 서버로부터 전달받은 'chat-message' Event 처리.
-    private Emitter.Listener onMessageReceived = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            // 데이터 파싱
-            try {
-
-                JSONObject receivedData = (JSONObject) args[0];
-                String Name = receivedData.getString("Name");
-                String ID = receivedData.getString("ID");
-                int confirmed=1;
-                int cat = receivedData.getInt("cat");
-                Log.d(TAG, Name);
-                Log.d(TAG, ID);
-                mSocket.disconnect();
-
-                try {
-                    confirmed=receivedData.getInt("Confirmed");
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-
-                //아직 회원 수락이 되지 않았다면
-                if(confirmed!=1){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(LoginActivity.this, "회원가입 대기중입니다.\n승인 후 이용해 주세요", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else if (cat==3) { //ID 또는 비밀번호 오류
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {    //메인 화면으로 이동
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("cat", cat);
-                    intent.putExtra("ID", email);
-                    intent.putExtra("Name", Name);
-                    startActivity(intent);
-                    finish();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(LoginActivity.this, "서버 연결 실패", Toast.LENGTH_SHORT).show();
+    private void PostLogin() {
+        API api=new API();
+        String Token=FirebaseInstanceId.getInstance().getToken();
+        Call<Account> call=api.getRetrofitService().PostLogin(new LoginData(email, password, Token));
+        Log.e("call", email+" "+password);
+        call.enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                if(response.isSuccessful()){ //데이터 반환성공 시
+                    Account account =response.body();
+                    if(account.isConfirmed()){    //승인이 된 사용자라면
+                        Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("Account", account);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "승인 대기중인 회원입니다", Toast.LENGTH_SHORT).show();
                     }
-                });
-            } finally {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressDialog.dismiss();
-                    }
-                });
+                }else {
+                    Toast.makeText(LoginActivity.this, "데이터를 받아오지 못했습니다", Toast.LENGTH_SHORT).show();
+                }
+                progressDialog.dismiss();
             }
 
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e("err", t.getCause().toString());
+                Toast.makeText(LoginActivity.this, "서버연결에 실패하였습니다", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        }
-    };
-
-    private void ConnectSocket() {
-        try {
-            mSocket = IO.socket(SetIPActivity.IP);   //서버 주소
-            mSocket.connect();
-            mSocket.on(Socket.EVENT_CONNECT, onConnect);
-            mSocket.on("serverMessage", onMessageReceived);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
     }
+
 }

@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
             android:allowBackup="true"
@@ -20,13 +20,13 @@
             android:usesCleartextTraffic="true">
 
         <provider
-                 android:authorities="mtsealove.com.github.buslinker.provider"
-                  android:name="android.support.v4.content.FileProvider"
-                  android:exported="false"
-                  android:grantUriPermissions="true">
+                android:authorities="mtsealove.com.github.buslinker.provider"
+                android:name="android.support.v4.content.FileProvider"
+                android:exported="false"
+                android:grantUriPermissions="true">
             <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/provider_paths"/>
 
         </provider>
         <service
@@ -66,7 +66,8 @@
         </activity>
         <activity android:name=".Accounts.SignUpActivity">
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+                  android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity android:name=".RunInfoActivity">
         </activity>
@@ -74,7 +75,8 @@
         </activity>
         <activity android:name=".SetIPActivity">
         </activity>
-        <activity android:name=".PrevRunInfoActivity">
+        <activity android:name=".PrevRunInfoActivity"
+                  android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
     </application>
 

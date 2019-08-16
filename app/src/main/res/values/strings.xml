@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BusLinker 기사용</string>
+    <string name="app_name">BusLinker\n기사님</string>
     <!--운행정보 정렬기준-->
     <string-array name="sort_by">
         <item>가까운 출발지</item>

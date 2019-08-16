@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import mtsealove.com.github.BuslinkerDrivers.Entity.Load;
 import mtsealove.com.github.BuslinkerDrivers.LoadActivity;
 import mtsealove.com.github.BuslinkerDrivers.MainActivity;
 import mtsealove.com.github.BuslinkerDrivers.R;
@@ -37,18 +38,16 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        int RunInfoID=0;
 
         // TODO(developer): Handle FCM messages here.
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.e(TAG, remoteMessage.getData().toString());
 
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             try{
                 JSONObject jsonObject=new JSONObject(remoteMessage.getData());
-                Log.e(TAG, jsonObject.getInt("RunInfoID")+"");
-                RunInfoID=jsonObject.getInt("RunInfoID");
+                Log.e("테스트", String.valueOf(jsonObject.getInt("charge")));
+                Log.e(TAG, jsonObject.toString());
+                remoteMessage.getData().get("charge");
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -62,7 +61,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
 
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody(), RunInfoID);
+            sendNotification(remoteMessage.getNotification().getBody());
         }
 
 
@@ -77,12 +76,10 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody, int RunInfoID) {
+    private void sendNotification(String messageBody) {
         Intent intent;
         if (isRunning(getBaseContext())) {  //애플리케이션이 실행중이면
             intent = new Intent(this, RunInfoActivity.class);
-            intent.putExtra("RunInfoID",RunInfoID );
-            intent.putExtra("cat", 0);
         }
         else    //실행중이 아니면
             intent = new Intent(this, LoadActivity.class);
