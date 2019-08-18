@@ -154,6 +154,6 @@ public class PrevRunInfoActivity extends AppCompatActivity {
 
     public static void closeDrawer() {
         if(drawerLayout.isDrawerOpen(Gravity.START))
-            drawerLayout.openDrawer(Gravity.START);
+            drawerLayout.closeDrawer(Gravity.START);
     }
 }

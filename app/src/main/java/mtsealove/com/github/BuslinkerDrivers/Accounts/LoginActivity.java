@@ -1,11 +1,14 @@
 package mtsealove.com.github.BuslinkerDrivers.Accounts;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.google.firebase.iid.FirebaseInstanceId;
 import mtsealove.com.github.BuslinkerDrivers.Design.SystemUiTuner;
@@ -20,6 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.*;
+import java.net.IDN;
 
 public class LoginActivity extends AppCompatActivity {
     final int BusDriver = 0, BusCompany = 1;
@@ -29,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailET, passwordET;
     private Button loginBtn;
     private CheckBox keepCB;    //로그인 유지
+    private ImageView AppIconIV;
     boolean LogOuted;
     private ProgressDialog progressDialog;
     @Override
@@ -49,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordET = findViewById(R.id.passwordET);
         keepCB = findViewById(R.id.keepCB);
         findPwTV=findViewById(R.id.findPwTV);
+        AppIconIV=findViewById(R.id.AppIconIV);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,14 +66,25 @@ public class LoginActivity extends AppCompatActivity {
         SystemUiTuner systemUiTuner=new SystemUiTuner(this);
         systemUiTuner.setStatusBarWhite();
 
-        findPwTV.setOnClickListener(new View.OnClickListener() {
+        //앱 아이콘을 길게 누르면 Ip 설정으로 이동
+        AppIconIV.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onLongClick(View view) {
+                Vibrator vibrator= (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(30);
                 Intent intent=new Intent(LoginActivity.this, SetIPActivity.class);
                 startActivity(intent);
+                return false;
             }
         });
 
+        findPwTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(LoginActivity.this, FindAccountActivity.class);
+                startActivity(intent);
+            }
+        });
         LogOuted=getIntent().getBooleanExtra("Logout", false);
         if(!LogOuted)
             ReadAccount();
@@ -103,51 +120,24 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private File acFile;
     //단말에 ID와 비밀번호 저장
     private void WriteAccount(String email, String password){
-        acFile=new File(getFilesDir()+"ac.dat");
-        if(email!=null) {
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(acFile));
-                bw.write(email);
-
-                bw.newLine();
-                bw.write(password);
-                bw.flush();
-                bw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }else {
-            try {   //사용자 정보 삭제
-                BufferedWriter bw = new BufferedWriter(new FileWriter(acFile, false));
-                bw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        DBHelper dbHelper=new DBHelper(this, "Account", null, 1);
+        if(email!=null)
+            dbHelper.Write(email, password);
+        else
+            dbHelper.Delete();
     }
 
     //저장된 Pw 읽기
     private void ReadAccount(){
-        acFile=new File(getFilesDir()+"ac.dat");
-        try {
-            BufferedReader br=new BufferedReader(new FileReader(acFile));
-            String email=br.readLine();
-            String pw=br.readLine();
-            br.close();
-            //로그인 진행
-            if(email!=null&&email.length()!=0) {
-                emailET.setText(email);
-                passwordET.setText(pw);
-                keepCB.setChecked(true);
-                loginBtn.performClick();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        DBHelper dbHelper=new DBHelper(this, "Account", null, 1);
+        LoginData loginData=dbHelper.Read();
+        if(loginData!=null){
+            emailET.setText(loginData.getID());
+            passwordET.setText(loginData.getPassword());
+            keepCB.setChecked(true);
+            loginBtn.performClick();
         }
     }
 
@@ -184,7 +174,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Account> call, Throwable t) {
                 progressDialog.dismiss();
-                Log.e("err", t.getCause().toString());
                 Toast.makeText(LoginActivity.this, "서버연결에 실패하였습니다", Toast.LENGTH_SHORT).show();
             }
         });

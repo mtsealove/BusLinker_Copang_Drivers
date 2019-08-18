@@ -272,7 +272,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     //RetroFit 초기화
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
-        apiService = new Retrofit.Builder().baseUrl(SetIPActivity.IP.replace("3200", "3210")).client(client).build().create(ApiService.class);
+        apiService = new Retrofit.Builder().baseUrl("http://"+SetIPActivity.IP+":3210").client(client).build().create(ApiService.class);
     }
 
     //이미지 선택 인텐트

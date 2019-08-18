@@ -18,7 +18,10 @@ public interface RetrofitService {
     //운행정보(과거)
     @GET("/RunInfoPrev")
     Call<List<RunInfo>> GetRunInfoPrev(@Query("DriverID") String driverID, @Query("key") String key);
-    //토큰 등록
-    @POST
-    Call<String> PostToken(@Body String token);
+    //최근 배송건수 확인
+    @GET("/RecentRunCnt")
+    Call<Count> GetRecentRunCnt(@Query("DriverID") String driverID);
+    //인증번호 발송 요청
+    @POST("/VerifyPhone")
+    Call<Verify> PostPhone(@Body PhoneNumber phoneNumber);
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="mtsealove.com.github.BuslinkerDrivers">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -8,6 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
             android:allowBackup="true"
@@ -18,17 +20,26 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".Accounts.AccountActivity">
+        </activity>
+        <activity
+                android:name=".Accounts.FindAccountActivity"
+                android:label="@string/title_activity_find_account"
+                android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".Accounts.FindPwActivity">
+        </activity>
 
         <provider
-                android:authorities="mtsealove.com.github.buslinker.provider"
                 android:name="android.support.v4.content.FileProvider"
+                android:authorities="mtsealove.com.github.buslinker.provider"
                 android:exported="false"
                 android:grantUriPermissions="true">
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/provider_paths"/>
-
         </provider>
+
         <service
                 android:name=".Service.FireBaseMessagingService"
                 android:enabled="true"
@@ -36,7 +47,6 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-
         </service>
         <service
                 android:name=".Service.FirebaseInstanceIDService"
@@ -66,8 +76,9 @@
         </activity>
         <activity android:name=".Accounts.SignUpActivity">
         </activity>
-        <activity android:name=".MainActivity"
-                  android:windowSoftInputMode="stateAlwaysHidden">
+        <activity
+                android:name=".MainActivity"
+                android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
         <activity android:name=".RunInfoActivity">
         </activity>
@@ -75,8 +86,9 @@
         </activity>
         <activity android:name=".SetIPActivity">
         </activity>
-        <activity android:name=".PrevRunInfoActivity"
-                  android:windowSoftInputMode="stateAlwaysHidden">
+        <activity
+                android:name=".PrevRunInfoActivity"
+                android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
     </application>
 

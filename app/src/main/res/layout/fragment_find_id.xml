@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="mtsealove.com.github.BuslinkerDrivers.Accounts.FindIdFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="등록된 휴대폰 번호로 찾기"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+    <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:layout_marginTop="10dp"
+              android:background="@drawable/background_input"
+              android:textSize="20sp"
+              android:inputType="phone"
+              android:textColor="@color/black"
+              android:hint="등록한 휴대폰 번호를 입력하세요"
+              android:padding="5dp" android:id="@+id/phoneET"/>
+
+    <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:visibility="gone"
+              android:layout_marginTop="10dp"
+              android:background="@drawable/background_input"
+              android:textSize="20sp"
+              android:inputType="phone"
+              android:textColor="@color/black"
+              android:hint="인증번호"
+              android:padding="5dp" android:id="@+id/confirmET"/>
+
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:text="인증번호 요청"
+            android:textSize="20sp"
+            android:background="@drawable/btn_primary" android:id="@+id/verifyBtn"/>
+</LinearLayout>

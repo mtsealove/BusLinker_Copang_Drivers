@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         ID = account.getID();
         Name = account.getName();
         cat = account.getCat();
+        accountView.setPassword(account.getPassword());
 
         accountView.setName(Name, cat);
         accountView.setUserID(ID);

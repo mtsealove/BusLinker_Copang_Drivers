@@ -12,11 +12,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import mtsealove.com.github.BuslinkerDrivers.Accounts.AccountActivity;
 import mtsealove.com.github.BuslinkerDrivers.Accounts.LoginActivity;
 import mtsealove.com.github.BuslinkerDrivers.MainActivity;
 import mtsealove.com.github.BuslinkerDrivers.PrevRunInfoActivity;
 import mtsealove.com.github.BuslinkerDrivers.R;
+import mtsealove.com.github.BuslinkerDrivers.Restful.API;
+import mtsealove.com.github.BuslinkerDrivers.Restful.Count;
 import mtsealove.com.github.BuslinkerDrivers.RunInfoActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 //사이드 뷰 정의 클래스
 public class AccountView extends LinearLayout {
@@ -24,10 +30,11 @@ public class AccountView extends LinearLayout {
     private LinearLayout AccountBtn, RunLogBtn, LogoutBtn;
     private ImageView closeBtn;
     private Context context;
-    private String ParentActivitName;
+    private String ParentActivityName;
 
     private static String UserID;
     private static String UserName;
+    private String password;
 
     public AccountView(Context context){
         super(context);
@@ -72,15 +79,20 @@ public class AccountView extends LinearLayout {
                 LogOut();
             }
         });
-
         RunLogBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 RunLog();
             }
         });
+        AccountBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Account();
+            }
+        });
         addView(view);
-        ParentActivitName=context.getClass().getSimpleName();
+        ParentActivityName=context.getClass().getSimpleName();
         closeBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,11 +113,16 @@ public class AccountView extends LinearLayout {
     //사용자 ID 설정
     public void setUserID(String userID){
         this.UserID=userID;
+        SetRecentRun();
     }
 
     public void setUserName(String userName){
         this.UserName=userName;
         NameTV.setText(userName);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     //로그아웃
@@ -136,8 +153,9 @@ public class AccountView extends LinearLayout {
 
     //이전 운행정보
     private void RunLog(){
-        if(ParentActivitName.equals("PrevRunInfoActivity")){
+        if(ParentActivityName.equals("PrevRunInfoActivity")){
         } else {
+            closeDrawer();
             Intent intent=new Intent(context, PrevRunInfoActivity.class);
             intent.putExtra("ID", UserID);
             intent.putExtra("Name", UserName);
@@ -145,6 +163,19 @@ public class AccountView extends LinearLayout {
         }
     }
 
+    //계정정보
+    private void Account() {
+        if(ParentActivityName.equals("AccountActivity")){
+        } else {
+            closeDrawer();
+            Intent intent=new Intent(context, AccountActivity.class);
+            intent.putExtra("password", password);
+            intent.putExtra("ID", UserID);
+            context.startActivity(intent);
+        }
+    }
+
+    //좌측 레이아웃 닫기
     private void closeDrawer() {
         String contextStr=context.getClass().getSimpleName();
         switch (contextStr){
@@ -158,5 +189,24 @@ public class AccountView extends LinearLayout {
                 PrevRunInfoActivity.closeDrawer();
                 break;
         }
+    }
+
+    private void SetRecentRun() {
+        API api=new API();
+        Call<Count> call=api.getRetrofitService().GetRecentRunCnt(UserID);
+        call.enqueue(new Callback<Count>() {
+            @Override
+            public void onResponse(Call<Count> call, Response<Count> response) {
+                if(response.isSuccessful()){
+                    int count=response.body().getCount();
+                    RecentRunTV.setText(Integer.toString(count));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Count> call, Throwable t) {
+
+            }
+        });
     }
 }
