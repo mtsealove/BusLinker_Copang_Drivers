@@ -24,4 +24,7 @@ public interface RetrofitService {
     //인증번호 발송 요청
     @POST("/VerifyPhone")
     Call<Verify> PostPhone(@Body PhoneNumber phoneNumber);
+    //계정정보 업데이트
+    @POST("/Update/Account")
+    Call<PostResult> UpdateAccount(@Body AccountUpdate accountUpdate);
 }
