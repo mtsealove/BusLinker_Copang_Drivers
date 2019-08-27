@@ -10,21 +10,21 @@ import java.util.List;
 
 public interface RetrofitService {
     //로그인
-    @POST("/Login")
+    @POST("/Driver/Login")
     Call<Account> PostLogin(@Body LoginData loginData);
     //운행정보(오늘 이후)
-    @GET("/RunInfoNext")
+    @GET("/Driver/RunInfoNext")
     Call<List<RunInfo>> GetRunInfoNext(@Query("DriverID") String driverID, @Query("key") String key);
     //운행정보(과거)
-    @GET("/RunInfoPrev")
+    @GET("/Driver/RunInfoPrev")
     Call<List<RunInfo>> GetRunInfoPrev(@Query("DriverID") String driverID, @Query("key") String key);
     //최근 배송건수 확인
-    @GET("/RecentRunCnt")
+    @GET("/Driver/RecentRunCnt")
     Call<Count> GetRecentRunCnt(@Query("DriverID") String driverID);
     //인증번호 발송 요청
-    @POST("/VerifyPhone")
+    @POST("/Driver/VerifyPhone")
     Call<Verify> PostPhone(@Body PhoneNumber phoneNumber);
     //계정정보 업데이트
-    @POST("/Update/Account")
+    @POST("/Driver/Update/Account")
     Call<PostResult> UpdateAccount(@Body AccountUpdate accountUpdate);
 }
